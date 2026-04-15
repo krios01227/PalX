@@ -1445,7 +1445,6 @@ async function checkPostGate(){
   else { if(gate)gate.style.display='none'; if(form)form.style.display='block'; }
 }
 
-let postCatSel='pallets';
 function sct(c,el){postCatSel=c;document.querySelectorAll('.ctiles .ctile').forEach(t=>t.classList.remove('sel'));el.classList.add('sel');}
 function pstep(n){
   for(let i=0;i<4;i++){
