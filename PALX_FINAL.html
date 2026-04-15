@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PALX — SoCal Pallet Industry Marketplace</title>
+<meta name="description" content="PALX is the SoCal pallet industry marketplace. Buy and sell pallets, lumber, hardware, equipment and services. Verified pallet yards, real pricing, direct messaging.">
+<meta property="og:title" content="PALX — SoCal Pallet Industry Marketplace">
+<meta property="og:description" content="Buy and sell pallets, lumber, hardware, and services across SoCal. Real companies, real prices, direct deals.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#BA7517">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ─── TOKENS ─── */
+:root{
+  --a:#BA7517;--al:#FAEEDA;--am:#FAC775;
+  --t:#0F6E56;--tl:#E1F5EE;
+  --dk:#1C1A16;--bd:#4A4845;--lt:#FAF8F5;
+  --b:rgba(0,0,0,.09);--bm:rgba(0,0,0,.14);
+  --r:8px;--rl:12px;--rxl:18px;
+  --nav-h:58px;--mob-nav-h:60px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--bd);background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Fraunces',serif;color:var(--dk);font-weight:500;line-height:1.2}
+img{max-width:100%}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--a)}
+.view{display:none}.view.on{display:block}
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--r);font-size:14px;font-weight:500;border:1px solid var(--bm);background:#fff;color:var(--dk);transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--lt)}
+.ba{background:var(--a)!important;color:#fff!important;border-color:var(--a)!important}.ba:hover{background:#9a6010!important}
+.bt{background:var(--t)!important;color:#fff!important;border-color:var(--t)!important}.bt:hover{background:#085041!important}
+.bo{background:transparent!important;border-color:var(--a)!important;color:var(--a)!important}.bo:hover{background:var(--al)!important}
+.bd2{background:var(--dk)!important;color:#fff!important;border-color:var(--dk)!important}
+.lg{padding:13px 28px!important;font-size:15px!important;border-radius:var(--rl)!important}
+.sm{padding:5px 11px!important;font-size:12px!important}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+/* ─── BADGES & TAGS ─── */
+.bdg{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px}
+.bp{background:#E6F1FB;color:#0C447C}.bl{background:#FAEEDA;color:#633806}
+.bh{background:#F1EFE8;color:#444}.be{background:#FAECE7;color:#712B13}
+.bs{background:#E1F5EE;color:#085041}.bw{background:#EAF3DE;color:#27500A}
+.bmem{background:#E1F5EE;color:#085041}.bver{background:#EAF3DE;color:#27500A}
+.sp{background:#FAEEDA;color:#633806}.scn{background:#E6F1FB;color:#0C447C}
+.spd{background:#EAF3DE;color:#27500A}.sco{background:#E1F5EE;color:#085041}
+.sca{background:#FCEBEB;color:#791F1F}
+.tag{display:inline-block;font-size:11px;background:#f2f0eb;border-radius:5px;padding:2px 7px;color:#666}
+/* ─── FORMS ─── */
+.fg{margin-bottom:14px}
+.fg label,.fg2 label{display:block;font-size:12px;font-weight:500;color:var(--bd);margin-bottom:4px}
+.fg input,.fg select,.fg textarea,
+.fg2 input,.fg2 select,.fg2 textarea{width:100%;padding:10px 12px;border:1px solid var(--bm);border-radius:var(--r);font-size:14px;font-family:inherit;color:var(--dk);background:#fff;transition:border-color .15s;-webkit-appearance:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus,
+.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--a);outline:none;box-shadow:0 0 0 3px rgba(186,117,23,.1)}
+.fg textarea,.fg2 textarea{resize:vertical;min-height:80px;line-height:1.5}
+.fg2{margin-bottom:12px}
+.fgr,.fg2r{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.tog{width:40px;height:22px;border-radius:11px;background:var(--bm);position:relative;border:none;flex-shrink:0;transition:background .2s}
+.tog.on{background:var(--t)}.tog::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog.on::after{left:21px}
+/* ─── FEEDBACK ─── */
+.err{background:#FCEBEB;color:#791F1F;border-radius:var(--r);padding:10px 13px;font-size:13px;margin-bottom:14px;display:none}
+.err.on{display:block}
+.ok{background:var(--tl);color:#085041;border-radius:var(--r);padding:10px 13px;font-size:13px;margin-bottom:14px;display:none}
+.ok.on{display:block}
+.loading{text-align:center;padding:40px 24px;color:var(--bd);font-size:14px}
+.spinner{width:24px;height:24px;border:2px solid var(--b);border-top-color:var(--a);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:48px 24px;color:var(--bd)}
+.empty-state .es-ic{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:14px;margin-bottom:16px}
+/* ─── LANDING ─── */
+.lnav{background:#fff;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:16px;padding:0 40px;height:var(--nav-h);position:sticky;top:0;z-index:200}
+.lbrand{font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:var(--dk);cursor:pointer;letter-spacing:-.3px;text-decoration:none}.lbrand b{color:var(--a)}
+.lnl{font-size:14px;color:var(--bd);border:none;background:none;padding:4px 0;text-decoration:none}.lnl:hover{color:var(--dk)}
+.hero{padding:88px 40px 70px;background:var(--lt);background-image:radial-gradient(circle,#d8d0c4 1px,transparent 1px);background-size:22px 22px;text-align:center;border-bottom:1px solid var(--b)}
+.hero-eye{display:inline-flex;align-items:center;gap:7px;background:var(--al);color:#633806;font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;margin-bottom:22px}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--a);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:50px;color:var(--dk);margin-bottom:16px;max-width:720px;margin-left:auto;margin-right:auto}
+.hero h1 em{color:var(--a);font-style:normal}
+.hero-sub{font-size:17px;color:var(--bd);max-width:510px;margin:0 auto 30px;font-weight:300;line-height:1.7}
+.hbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.hstats{display:flex;border:1px solid var(--bm);border-radius:var(--rxl);overflow:hidden;max-width:640px;margin:0 auto;background:#fff}
+.hst{flex:1;padding:18px 10px;text-align:center;border-right:1px solid var(--b)}.hst:last-child{border-right:none}
+.hst-n{font-family:'Fraunces',serif;font-size:26px;color:var(--dk)}.hst-l{font-size:12px;color:var(--bd);margin-top:2px}
+.sec{padding:72px 40px}.sec.alt{background:var(--lt)}
+.sc-ctr{text-align:center;max-width:680px;margin:0 auto 44px}
+.sc-eye{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--a);margin-bottom:12px}
+.sc-ctr h2{font-size:34px;margin-bottom:12px}.sc-ctr p{font-size:16px;color:var(--bd);line-height:1.7}
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto}
+.hcard{background:#fff;border:1px solid var(--b);border-radius:var(--rxl);padding:26px}
+.hn{width:32px;height:32px;border-radius:50%;background:var(--al);color:#633806;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.hcard h3{font-size:17px;margin-bottom:7px}.hcard p{font-size:13px;color:var(--bd);line-height:1.6}
+.mpg{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto}
+.mpc{background:#fff;border:1px solid var(--b);border-radius:var(--rxl);padding:22px}
+.mpc-t{font-size:14px;font-weight:600;color:var(--dk);margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.ldot{width:7px;height:7px;border-radius:50%;background:#3B6D11;flex-shrink:0}
+.prr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--b)}.prr:last-child{border-bottom:none}
+.prn{font-size:13px;color:var(--dk);font-weight:500}.prc{font-size:11px;color:var(--bd)}
+.prp{font-size:13px;font-weight:600;color:var(--dk);text-align:right}.prch{font-size:11px;text-align:right;margin-top:1px}
+.up{color:#27500A}.dn{color:#791F1F}.fl{color:#888}
+.ni-item{padding:11px 0;border-bottom:1px solid var(--b)}.ni-item:last-child{border-bottom:none}
+.ni-hl{font-size:13px;color:var(--dk);font-weight:500;cursor:pointer;margin-bottom:3px;line-height:1.4}.ni-hl:hover{color:var(--a)}.ni-mt{font-size:11px;color:var(--bd)}
+.nc-a{color:var(--t);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.nc-m{color:#0C447C;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.nc-al{color:#712B13;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:960px;margin:0 auto}
+.fc{padding:22px;border:1px solid var(--b);border-radius:var(--rl);background:#fff}
+.fc-ic{font-size:26px;margin-bottom:12px}.fc h4{font-size:15px;font-weight:500;color:var(--dk);margin-bottom:7px}.fc p{font-size:13px;color:var(--bd);line-height:1.55}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto}
+.tcard{background:var(--lt);border:1px solid var(--b);border-radius:var(--rxl);padding:24px}
+.tcard-q{font-family:'Fraunces',serif;font-size:16px;color:var(--dk);line-height:1.55;margin-bottom:16px;font-style:italic;font-weight:300}
+.stars{color:var(--a);font-size:13px;margin-bottom:10px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:820px;margin:0 auto}
+.pcard{background:#fff;border:1px solid var(--b);border-radius:var(--rxl);padding:26px;position:relative}
+.pcard.feat{border:2px solid var(--a)}
+.pc-bdg{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--a);color:#fff;font-size:11px;font-weight:600;padding:4px 14px;border-radius:20px;white-space:nowrap}
+.pc-plan{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--bd);margin-bottom:8px}
+.pc-price{font-family:'Fraunces',serif;font-size:36px;color:var(--dk);margin-bottom:4px}
+.pc-price span{font-size:15px;font-family:'DM Sans',sans-serif;font-weight:400;color:var(--bd)}
+.pc-sub{font-size:13px;color:var(--bd);margin-bottom:18px}
+.pc-ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.pc-ul li{font-size:13px;color:var(--bd);display:flex;align-items:flex-start;gap:7px;line-height:1.4}
+.pc-ul li::before{content:'✓';color:var(--t);font-weight:700;flex-shrink:0}
+.pc-ul li.no{color:#aaa}.pc-ul li.no::before{content:'–';color:#ccc}
+.cta{background:var(--dk);padding:72px 40px;text-align:center}
+.cta h2{font-family:'Fraunces',serif;font-size:36px;color:#fff;margin-bottom:12px}
+.cta p{font-size:16px;color:rgba(255,255,255,.6);margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto}
+.lfoot{background:#111;padding:48px 40px 0;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px}
+.lfb{font-family:'Fraunces',serif;font-size:20px;color:#fff;margin-bottom:8px}.lfb b{color:#FAC775}
+.lft{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6}
+.lfc h5{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.35);margin-bottom:12px}
+.lfc a{display:block;font-size:13px;color:rgba(255,255,255,.55);margin-bottom:8px;cursor:pointer;text-decoration:none}.lfc a:hover{color:#fff}
+.lfbt{padding:20px 40px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.28);margin-top:40px}
+/* ─── MODALS ─── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:var(--rxl);padding:28px;width:100%;max-width:460px;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Fraunces',serif;font-size:22px;color:var(--dk);margin-bottom:4px}
+.modal-sub{font-size:14px;color:var(--bd);margin-bottom:22px}
+.modal-close{position:absolute;top:14px;right:14px;font-size:20px;background:none;border:none;color:var(--bd);line-height:1;padding:4px}
+.modal-close:hover{color:var(--dk)}
+/* ─── AUTH ─── */
+.su-steps{display:flex;gap:5px;margin-bottom:22px}
+.su-dot{flex:1;height:4px;border-radius:2px;background:var(--b)}
+.su-dot.on{background:var(--a)}.su-dot.d{background:var(--t)}
+.plan-opt{border:1px solid var(--bm);border-radius:var(--rl);padding:14px 16px;cursor:pointer;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;background:#fff;transition:all .15s}
+.plan-opt:hover{background:var(--lt)}.plan-opt.sel{border:2px solid var(--a);background:var(--al)}
+.plan-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--bm);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.plan-opt.sel .plan-radio{border-color:var(--a);background:var(--a)}.plan-opt.sel .plan-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.plan-n{font-size:14px;font-weight:600;color:var(--dk)}.plan-p{font-size:13px;color:var(--a);font-weight:500}.plan-f{font-size:12px;color:var(--bd);margin-top:3px;line-height:1.5}
+/* ─── APP SHELL ─── */
+.app{display:grid;grid-template-columns:210px 1fr;min-height:100vh;background:#f5f3ef}
+/* Desktop sidebar */
+.sb{background:#fff;border-right:1px solid var(--b);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-top{padding:16px 14px;border-bottom:1px solid var(--b);flex-shrink:0}
+.sb-brand{font-family:'Fraunces',serif;font-size:20px;font-weight:500;color:var(--dk);cursor:pointer;text-decoration:none}.sb-brand b{color:var(--a)}
+.sb-assoc{font-size:11px;color:var(--t);font-weight:500;margin-top:2px}
+.sb-sec{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--bd);opacity:.5;padding:12px 13px 4px;flex-shrink:0}
+.sb-nav{padding:0 7px;display:flex;flex-direction:column;gap:1px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--r);font-size:13px;font-weight:500;color:var(--bd);border:none;background:none;width:100%;text-align:left;transition:all .15s}
+.ni:hover{background:var(--lt);color:var(--dk)}.ni.on{background:var(--al);color:#633806}
+.ni-ic{font-size:15px;width:17px;text-align:center;flex-shrink:0}
+.ni-bdg{margin-left:auto;background:var(--a);color:#fff;border-radius:7px;padding:1px 6px;font-size:10px;font-weight:600}
+.sb-user{margin-top:auto;padding:12px;border-top:1px solid var(--b);display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.sb-user:hover{background:var(--lt)}
+.sb-av{width:34px;height:34px;border-radius:50%;background:var(--al);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#633806;flex-shrink:0}
+.sb-nm{font-size:12px;font-weight:600;color:var(--dk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.sb-rl{font-size:11px;color:var(--bd)}
+/* Mobile header (hidden on desktop) */
+.mob-header{display:none;background:#fff;border-bottom:1px solid var(--b);height:52px;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100}
+.mob-brand{font-family:'Fraunces',serif;font-size:20px;font-weight:500;color:var(--dk)}.mob-brand b{color:var(--a)}
+/* Mobile bottom nav (hidden on desktop) */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--b);height:var(--mob-nav-h);z-index:100;align-items:center;justify-content:space-around;padding:0 4px;box-shadow:0 -2px 16px rgba(0,0,0,.08)}
+.mob-ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border:none;background:none;font-size:10px;font-weight:500;color:var(--bd);flex:1;position:relative}
+.mob-ni.on{color:var(--a)}.mob-ni-ic{font-size:20px;line-height:1}
+.mob-bdg{position:absolute;top:4px;right:calc(50% - 18px);background:var(--a);color:#fff;border-radius:8px;padding:1px 5px;font-size:9px;font-weight:700}
+/* Main content */
+.main-area{min-width:0;overflow-y:auto}
+.asc{display:none;padding:22px}.asc.on{display:block}
+/* on mobile add bottom padding for nav bar */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.ph-l h1{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--dk)}.ph-l p{font-size:13px;color:var(--bd);margin-top:3px}
+.card{background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:16px}
+.card-t{font-size:13px;font-weight:600;color:var(--dk);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stc{background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:14px}
+.stc-l{font-size:11px;font-weight:500;color:var(--bd);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.stc-v{font-family:'Fraunces',serif;font-size:26px;color:var(--dk)}.stc-s{font-size:11px;color:var(--bd);margin-top:3px}
+.stc.am .stc-v{color:var(--a)}.stc.te .stc-v{color:var(--t)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:8px 11px;font-size:11px;font-weight:600;color:var(--bd);border-bottom:1px solid var(--b);text-transform:uppercase;letter-spacing:.3px}
+.tbl td{padding:10px 11px;border-bottom:1px solid var(--b);color:var(--dk);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:var(--lt)}
+.ftabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.ftab{padding:5px 14px;border-radius:20px;font-size:13px;border:1px solid var(--bm);background:transparent;color:var(--bd)}
+.ftab:hover{background:var(--lt)}.ftab.on{background:var(--a);color:#fff;border-color:var(--a)}
+.catbar{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.catbar::-webkit-scrollbar{height:3px}.catbar::-webkit-scrollbar-track{background:transparent}.catbar::-webkit-scrollbar-thumb{background:var(--bm);border-radius:3px}
+.cpill{padding:6px 15px;border-radius:20px;font-size:13px;border:1px solid var(--bm);background:transparent;color:var(--bd);white-space:nowrap}
+.cpill:hover,.cpill.on{background:var(--a);color:#fff;border-color:var(--a)}
+/* Marketplace grid */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.lcard{background:#fff;border:1px solid var(--b);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all .15s}
+.lcard:hover{border-color:var(--bm);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.lcard-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;background-size:cover;background-position:center}
+.lcard-body{padding:11px 13px}
+/* Photo upload */
+.upzone{border:2px dashed var(--bm);border-radius:var(--rl);padding:26px;text-align:center;cursor:pointer;color:var(--bd);font-size:13px;transition:all .15s}
+.upzone:hover,.upzone.drag{background:var(--lt);border-color:var(--a)}
+.photo-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.photo-thumb{width:80px;height:80px;border-radius:var(--r);object-fit:cover;border:1px solid var(--b);position:relative}
+.photo-del{position:absolute;top:-7px;right:-7px;background:#fff;border:1px solid var(--bm);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.photo-wrap{position:relative;display:inline-block}
+/* Company cards */
+.cogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:12px}
+.cocard{background:#fff;border:1px solid var(--b);border-radius:var(--rxl);overflow:hidden;cursor:pointer;transition:all .15s}
+.cocard:hover{border-color:var(--a);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.co-banner{height:60px;display:flex;align-items:center;justify-content:flex-end;padding:0 12px;font-size:11px;font-weight:500;color:rgba(255,255,255,.8)}
+.co-body{padding:14px}
+.co-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin:-26px 0 8px;border:3px solid #fff;color:#fff}
+/* Company profile */
+.coph{background:#fff;border-bottom:1px solid var(--b)}
+.coph-banner{height:120px;position:relative}
+.coph-av{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border:4px solid #fff;position:absolute;bottom:-30px;left:22px;color:#fff}
+.coph-body{padding:40px 22px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.coph-name{font-family:'Fraunces',serif;font-size:22px;color:var(--dk);margin-bottom:3px}
+.co-content{padding:18px 22px}
+.co-tabs{display:flex;border-bottom:1px solid var(--b);margin-bottom:18px;overflow-x:auto}
+.co-tab{padding:10px 18px;font-size:14px;font-weight:500;color:var(--bd);border-bottom:2px solid transparent;margin-bottom:-1px;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap}
+.co-tab:hover{color:var(--dk)}.co-tab.on{color:var(--a);border-bottom-color:var(--a)}
+.co-ag{display:grid;grid-template-columns:1fr 280px;gap:16px}
+.co-ig{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.co-ic{background:#fff;padding:11px 14px}
+.co-il{font-size:11px;color:var(--bd);margin-bottom:2px}.co-iv{font-size:13px;font-weight:500;color:var(--dk)}
+.spec-tag{display:inline-block;background:var(--lt);border:1px solid var(--b);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--bd);margin:3px}
+.rev-i{padding:12px 0;border-bottom:1px solid var(--b)}.rev-i:last-child{border-bottom:none}
+/* Messaging */
+.inbox{display:grid;grid-template-columns:240px 1fr;border:1px solid var(--b);border-radius:var(--rl);overflow:hidden;background:#fff;height:calc(100vh - 160px);min-height:400px}
+.tlist{border-right:1px solid var(--b);overflow-y:auto}
+.thread{padding:12px 13px;border-bottom:1px solid var(--b);cursor:pointer;display:flex;gap:9px;transition:background .1s}
+.thread:hover,.thread.on{background:var(--lt)}
+.t-av{width:36px;height:36px;border-radius:50%;background:var(--al);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#633806;flex-shrink:0}
+.udot{width:8px;height:8px;border-radius:50%;background:var(--a);flex-shrink:0;margin-top:4px}
+.convo{display:flex;flex-direction:column;height:100%}
+.c-hdr{padding:12px 16px;border-bottom:1px solid var(--b);font-size:14px;font-weight:600;color:var(--dk);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.msg{max-width:74%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5}
+.msg.them{background:var(--lt);color:var(--dk);align-self:flex-start;border-bottom-left-radius:3px}
+.msg.me{background:var(--a);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.msg-t{font-size:11px;color:var(--bd);margin-top:2px}.msg-t.me{text-align:right;color:rgba(255,255,255,.6)}
+.cinp{padding:10px;border-top:1px solid var(--b);display:flex;gap:8px;flex-shrink:0}
+.cinp textarea{flex:1;height:38px;padding:9px 12px;border:1px solid var(--bm);border-radius:var(--r);font-size:13px;resize:none;font-family:inherit;color:var(--dk);transition:border-color .15s}
+.cinp textarea:focus{border-color:var(--a);outline:none}
+/* Post wizard */
+.wsteps{display:flex;margin-bottom:20px;border-bottom:1px solid var(--b)}
+.ws{flex:1;text-align:center;font-size:12px;font-weight:500;padding:0 4px 10px;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--bd)}
+.ws.d{border-color:var(--t);color:var(--t)}.ws.on{border-color:var(--a);color:var(--a)}
+.fb{background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:16px;margin-bottom:10px}
+.fb-t{font-size:14px;font-weight:600;color:var(--dk);margin-bottom:12px}
+.ctiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ctile{padding:13px 8px;border:1px solid var(--bm);border-radius:var(--rl);text-align:center;cursor:pointer;background:#fff;transition:all .15s}
+.ctile:hover{background:var(--lt)}.ctile.sel{border:2px solid var(--a);background:var(--al)}
+.ctile-ic{font-size:24px;display:block;margin-bottom:5px}
+.wnav{display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--b)}
+.rb{height:5px;border-radius:3px;background:#e8e4dc;margin-top:6px;overflow:hidden}
+.rb-f{height:100%;border-radius:3px;background:var(--a)}
+/* Search bar */
+.search-bar{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--bm);border-radius:var(--rl);font-size:14px;font-family:inherit;color:var(--dk);background:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;transition:border-color .15s}
+.search-bar:focus{border-color:var(--a);outline:none;box-shadow:0 0 0 3px rgba(186,117,23,.1)}
+/* Onboarding */
+.onboard-card{background:#fff;border:1px solid var(--b);border-radius:var(--rxl);padding:20px;margin-bottom:16px}
+.ob-step{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
+.ob-step:last-child{border-bottom:none}
+.ob-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--bm);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:all .15s}
+.ob-check.done{background:var(--t);border-color:var(--t);color:#fff}
+/* Table overflow on mobile */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* Plan gate banner */
+.plan-gate{background:var(--al);border:1px solid var(--am);border-radius:var(--rl);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.plan-gate-t{font-size:13px;font-weight:600;color:#633806}
+.plan-gate-s{font-size:12px;color:#854F0B;margin-top:2px}
+/* Listing expiry warning */
+.expiry-warn{background:#FCEBEB;border:1px solid #F5C2C2;border-radius:var(--r);padding:8px 12px;font-size:12px;color:#791F1F;margin-top:6px;display:flex;align-items:center;gap:6px}
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  /* Show mobile UI, hide desktop UI */
+  .sb{display:none!important}
+  .mob-header{display:flex!important}
+  .mob-nav{display:flex!important}
+  .app{grid-template-columns:1fr!important}
+  .asc{padding:14px;padding-bottom:calc(var(--mob-nav-h) + 14px)}
+  /* Landing */
+  .lnav{padding:0 16px}
+  .lnav-links,.lacts .btn:first-child{display:none}
+  .hero{padding:48px 20px 40px}
+  .hero h1{font-size:32px}
+  .hero-sub{font-size:15px}
+  .hbtns{flex-direction:column;align-items:center}
+  .hbtns .btn{width:100%;max-width:300px}
+  .hstats{flex-wrap:wrap}
+  .hst{min-width:50%;border-bottom:1px solid var(--b)}
+  .sec{padding:48px 20px}
+  .hgrid,.fgrid,.tgrid,.mpg{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr}
+  .lfoot{grid-template-columns:1fr;padding:32px 20px 0}
+  .lfc{display:none}
+  .lfbt{flex-direction:column;gap:8px;text-align:center;padding:16px 20px}
+  /* App grids */
+  .sgrid{grid-template-columns:1fr 1fr}
+  .two-col,.co-ag{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr 1fr}
+  .fgr,.fg2r{grid-template-columns:1fr}
+  .lgrid{grid-template-columns:1fr 1fr}
+  .cogrid{grid-template-columns:1fr}
+  .ph{flex-direction:column}
+  .ph .btn{width:100%}
+  /* Messages full screen on mobile */
+  .inbox{grid-template-columns:1fr;height:auto}
+  .tlist{max-height:200px;border-right:none;border-bottom:1px solid var(--b)}
+  .convo{height:400px}
+  /* Tables scroll */
+  .tbl-wrap{overflow-x:auto}
+  .tbl{min-width:600px}
+  /* Post wizard */
+  .ctiles{grid-template-columns:repeat(2,1fr)}
+  .wsteps .ws{font-size:10px;padding-bottom:7px}
+  /* Company profile */
+  .coph-body{padding:38px 16px 16px}
+  .co-content{padding:14px 16px}
+}
+@media (max-width: 480px) {
+  .lgrid{grid-template-columns:1fr}
+  .sgrid{grid-template-columns:1fr 1fr}
+  .modal{padding:20px}
+}
+</style>
+<script>
+// ══════ SUPABASE CONFIG — replace these two values ══════
+const SUPABASE_URL = 'https://owhirybwrcmgltvcbcom.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_QvSUPYMSY8xyF-1qs996Pg_umZuAl4P';
+const ADMIN_EMAIL = 'kevinrios@penjamopallets.com';
+// ════════════════════════════════════════════════════════
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentUser = null, currentCompany = null;
+</script>
+</head>
+<body>
+<!-- ═══════ LANDING ═══════ -->
+<div id="vl" class="view on">
+<nav class="lnav">
+  <a class="lbrand" href="#">PALX<b>.</b></a>
+  <div class="lnav-links" style="display:flex;gap:24px;margin-left:20px">
+    <a class="lnl" href="#sec-how">How it works</a>
+    <a class="lnl" href="#sec-cos">Companies</a>
+    <a class="lnl" href="#sec-market">Market pulse</a>
+    
+  </div>
+  <div class="lacts" style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="btn" onclick="openAuthModal('login')">Log in</button>
+    <button class="btn ba" onclick="openAuthModal('signup')">Join free</button>
+  </div>
+</nav>
+<section class="hero">
+  <div class="hero-eye"><div class="hero-dot"></div>Now live — SoCal pallet industry marketplace</div>
+  <h1>The <em>pallet industry</em><br>marketplace built for SoCal.</h1>
+  <p class="hero-sub">Post loads, source stock, find hardware, and book services across the SoCal network. Free for all founding members during our beta launch.</p>
+  <div class="hbtns">
+    <button class="btn ba lg" onclick="openAuthModal('signup')">Create your free account &rarr;</button>
+    <button class="btn bo lg" onclick="openAuthModal('login')">Log in</button>
+  </div>
+  <div class="hstats">
+    <div class="hst"><div class="hst-n" id="stat-listings">—</div><div class="hst-l">Active listings</div></div>
+    <div class="hst"><div class="hst-n" id="stat-cos">—</div><div class="hst-l">Companies</div></div>
+    <div class="hst"><div class="hst-n">SoCal</div><div class="hst-l">Coverage area</div></div>
+    <div class="hst"><div class="hst-n">Free</div><div class="hst-l">During beta</div></div>
+  </div>
+</section>
+<section class="sec" id="sec-how">
+  <div class="sc-ctr"><div class="sc-eye">How it works</div><h2>Three steps to your first deal.</h2><p>No learning curve. Built for how the pallet business actually operates.</p></div>
+  <div class="hgrid">
+    <div class="hcard"><div class="hn">1</div><h3>Create your free account</h3><p>Sign up in under 2 minutes. Your info becomes your public company hub — a real web presence for your operation.</p></div>
+    <div class="hcard"><div class="hn">2</div><h3>Post or browse</h3><p>List what you have with photos, specs, and pricing. Browse loads, hardware, equipment, and services from the full network.</p></div>
+    <div class="hcard"><div class="hn">3</div><h3>Connect, close, and track</h3><p>Message sellers directly. Every deal you make logs automatically in your personal tracker.</p></div>
+  </div>
+</section>
+<section class="sec alt" id="sec-cos">
+  <div class="sc-ctr"><div class="sc-eye">Company directory</div><h2>Every company, one place.</h2><p>Browse verified pallet yards, lumber suppliers, hardware dealers, and service providers across SoCal.</p></div>
+  <div id="landing-cos" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1040px;margin:0 auto 22px"><div class="loading"><div class="spinner"></div></div></div>
+  <div style="text-align:center"><button class="btn ba" onclick="openAuthModal('signup')">Join to view all companies &rarr;</button></div>
+</section>
+<section class="sec" id="sec-market">
+  <div class="sc-ctr"><div class="sc-eye">Market pulse</div><h2>Stay in the loop.</h2><p>Current SoCal pricing and industry news — updated weekly.</p></div>
+  <div class="mpg" id="landing-market">
+    <div class="mpc"><div class="mpc-t"><div class="ldot"></div>Loading prices...</div></div>
+    <div class="mpc"><div class="mpc-t">Loading news...</div></div>
+  </div>
+</section>
+<section class="sec alt">
+  <div class="sc-ctr"><div class="sc-eye">Platform features</div><h2>Everything you need. Nothing you don't.</h2></div>
+  <div class="fgrid">
+    <div class="fc"><div class="fc-ic">🏢</div><h4>Company hub</h4><p>Your own public page — listings, reviews, contact info, and service area. A real web presence buyers can find.</p></div>
+    <div class="fc"><div class="fc-ic">📸</div><h4>Photos on every listing</h4><p>Upload real photos with every listing. Buyers see exactly what they're getting. No surprises, no wasted trips.</p></div>
+    <div class="fc"><div class="fc-ic">💬</div><h4>Direct messaging</h4><p>Message any member directly. Conversations stay tied to listings. Real-time notifications so you never miss a deal.</p></div>
+    <div class="fc"><div class="fc-ic">📊</div><h4>Sales &amp; purchase tracker</h4><p>Every deal tracked — status, amount, counterparty, notes. Your business ledger, built in.</p></div>
+    <div class="fc"><div class="fc-ic">🔍</div><h4>Search &amp; filter</h4><p>Search listings by keyword, city, or category. Find exactly what you need across the whole network instantly.</p></div>
+    <div class="fc"><div class="fc-ic">📡</div><h4>Market pulse</h4><p>Weekly SoCal pricing and industry news. Know what loads are worth before you post or buy.</p></div>
+  </div>
+</section>
+<section class="sec" id="sec-pricing" style="background:var(--lt);border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
+  <div style="max-width:680px;margin:0 auto;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:var(--al);color:#633806;font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;margin-bottom:22px;border:1px solid #FAC775">
+      <div style="width:7px;height:7px;border-radius:50%;background:#BA7517;animation:blink 2s infinite"></div>
+      Beta — free access for all founding members
+    </div>
+    <h2 style="font-size:32px;margin-bottom:14px">Free while we build together.</h2>
+    <p style="font-size:16px;color:var(--bd);line-height:1.7;max-width:520px;margin:0 auto 32px">PALX is in beta. Every feature is free for everyone in the network right now. No credit card, no limits. We're building this with the LA pallet community — your feedback shapes what comes next.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:620px;margin:0 auto 32px">
+      <div style="background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:18px;text-align:center">
+        <div style="font-size:26px;margin-bottom:8px">📋</div>
+        <div style="font-size:14px;font-weight:600;color:var(--dk);margin-bottom:4px">Post listings</div>
+        <div style="font-size:12px;color:var(--bd)">List what you have — pallets, lumber, hardware, services</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:18px;text-align:center">
+        <div style="font-size:26px;margin-bottom:8px">💬</div>
+        <div style="font-size:14px;font-weight:600;color:var(--dk);margin-bottom:4px">Message directly</div>
+        <div style="font-size:12px;color:var(--bd)">Connect with buyers and sellers across SoCal instantly</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:18px;text-align:center">
+        <div style="font-size:26px;margin-bottom:8px">📊</div>
+        <div style="font-size:14px;font-weight:600;color:var(--dk);margin-bottom:4px">Track every deal</div>
+        <div style="font-size:12px;color:var(--bd)">Sales, purchases, and your company hub — all included</div>
+      </div>
+    </div>
+    <button class="btn ba lg" onclick="openAuthModal('signup')">Join free during beta &rarr;</button>
+    <div style="margin-top:14px;font-size:12px;color:var(--bd)">Founding member pricing announced when beta ends. Early members get priority access.</div>
+  </div>
+</section>
+<section class="sec alt">
+  <div class="sc-ctr"><div class="sc-eye">What members say</div><h2>Built with the industry, for the industry.</h2></div>
+  <div class="tgrid">
+    <div class="tcard"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tcard-q">"The company hub is what sold me. My yard finally has a real web presence without paying for a website. Buyers find us now."</div><div style="font-size:13px;font-weight:600;color:var(--dk)">Jose R.</div><div style="font-size:12px;color:var(--bd)">JR Pallet Co. · Compton, CA</div></div>
+    <div class="tcard"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tcard-q">"The tracker alone is worth it. Used to log deals in a notebook. Now I can see every deal's status in real time."</div><div style="font-size:13px;font-weight:600;color:var(--dk)">Marco T.</div><div style="font-size:12px;color:var(--bd)">Harbor Pallet Depot · Paramount, CA</div></div>
+    <div class="tcard"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tcard-q">"Our group chat was a mess. PALX replaced it with something organized. The whole network uses it now."</div><div style="font-size:13px;font-weight:600;color:var(--dk)">Diana M.</div><div style="font-size:12px;color:var(--bd)">WestCoast Logistics · Long Beach, CA</div></div>
+  </div>
+</section>
+<div class="cta"><h2>The SoCal pallet network is live.</h2><p>Free during beta. Join the LA Pallet Association marketplace — no credit card, no subscription, no catch.</p><button class="btn ba lg" onclick="openAuthModal('signup')">Create your free account &rarr;</button></div>
+<footer class="lfoot"><div><div class="lfb">PALX<b>.</b></div><div class="lft">The SoCal pallet industry marketplace. Built by pallet people, for pallet people.</div></div><div class="lfc"><h5>Platform</h5><a>Marketplace</a><a>Company hub</a><a>Post listing</a><a>Tracker</a></div><div class="lfc"><h5>Resources</h5><a>Market pricing</a><a>Industry news</a><a>Grading guide</a><a>HT compliance</a></div><div class="lfc"><h5>Company</h5><a>About</a><a>Contact</a><a>Privacy</a></div></footer>
+<div class="lfbt"><span>© 2026 PALX. SoCal Pallet Industry Marketplace.</span><span>palxmarket.com</span></div>
+</div><!-- end landing -->
+<!-- ═══════ AUTH MODAL ═══════ -->
+<div class="modal-bg" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuthModal()">&#10005;</button>
+    <div id="auth-body"></div>
+  </div>
+</div>
+
+<!-- ═══════ GENERIC MODAL ═══════ -->
+<div class="modal-bg" id="gen-modal" onclick="if(event.target===this)closeGenModal()">
+  <div class="modal" id="gen-modal-inner">
+    <button class="modal-close" onclick="closeGenModal()">&#10005;</button>
+    <div id="gen-body"></div>
+  </div>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div id="vapp" class="view">
+
+<!-- Mobile header -->
+<div class="mob-header">
+  <div class="mob-brand">PALX<b>.</b></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="mob-av" style="width:32px;height:32px;border-radius:50%;background:var(--al);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#633806;cursor:pointer" onclick="gsc('myhub',null)">JR</div>
+  </div>
+</div>
+
+<div class="app">
+<!-- Desktop sidebar -->
+<div class="sb">
+  <div class="sb-top">
+    <a class="sb-brand" href="#" onclick="doSignOut();return false">PALX<b>.</b></a>
+    <div class="sb-assoc">SoCal Pallet Industry</div>
+  </div>
+  <div class="sb-sec">Main</div>
+  <div class="sb-nav">
+    <button class="ni on" onclick="gsc('dashboard',this)"><span class="ni-ic">&#9638;</span>Dashboard</button>
+    <button class="ni" onclick="gsc('marketplace',this)"><span class="ni-ic">&#9672;</span>Marketplace</button>
+    <button class="ni" onclick="gsc('companies',this)"><span class="ni-ic">&#8962;</span>Companies</button>
+    <button class="ni" onclick="gsc('mylistings',this)"><span class="ni-ic">&#8801;</span>My listings</button>
+    <button class="ni" onclick="gsc('post',this)"><span class="ni-ic">+</span>Post listing</button>
+  </div>
+  <div class="sb-sec">Tracker</div>
+  <div class="sb-nav">
+    <button class="ni" onclick="gsc('sales',this)"><span class="ni-ic">&#8593;</span>Sales</button>
+    <button class="ni" onclick="gsc('purchases',this)"><span class="ni-ic">&#8595;</span>Purchases</button>
+  </div>
+  <div class="sb-sec">Account</div>
+  <div class="sb-nav">
+    <button class="ni" onclick="gsc('messages',this)"><span class="ni-ic">&#9993;</span>Messages <span class="ni-bdg" id="msg-bdg" style="display:none">0</span></button>
+    <button class="ni" onclick="gsc('myhub',this)"><span class="ni-ic">&#9898;</span>My hub</button>
+    <button class="ni" id="admin-nav" style="display:none" onclick="gsc('admin',this)"><span class="ni-ic">&#9881;</span>Admin</button>
+  </div>
+  <div class="sb-user" onclick="gsc('myhub',null)">
+    <div class="sb-av" id="sb-av">?</div>
+    <div><div class="sb-nm" id="sb-nm">Loading...</div><div class="sb-rl" id="sb-rl">SoCal Pallet Industry</div></div>
+  </div>
+</div>
+
+<!-- Main area -->
+<div class="main-area">
+
+<!-- DASHBOARD -->
+<div id="sc-dashboard" class="asc on">
+  <div class="ph">
+    <div class="ph-l"><h1 id="dash-greet">Good morning</h1><p id="dash-date"></p></div>
+    <button class="btn ba" onclick="gsc('post',null)">+ Post listing</button>
+  </div>
+  <!-- Onboarding checklist (hidden once complete) -->
+  <div id="onboarding-card" style="display:none" class="onboard-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:600;color:var(--dk)">Get started on PALX</div><div style="font-size:12px;color:var(--bd);margin-top:2px">3 quick steps to get the most out of the platform</div></div>
+      <button class="btn sm" onclick="dismissOnboarding()" style="color:var(--bd)">Dismiss</button>
+    </div>
+    <div class="ob-step" id="ob1"><div class="ob-check" id="ob1-check">1</div><div><div style="font-size:13px;font-weight:500;color:var(--dk)">Complete your company profile</div><div style="font-size:12px;color:var(--bd)">Add your description, phone, and service area so buyers can find you</div></div><button class="btn sm ba" onclick="gsc('myhub',null)" style="margin-left:auto">Go →</button></div>
+    <div class="ob-step" id="ob2"><div class="ob-check" id="ob2-check">2</div><div><div style="font-size:13px;font-weight:500;color:var(--dk)">Post your first listing</div><div style="font-size:12px;color:var(--bd)">List what you have — pallets, lumber, hardware, services, or a wanted post</div></div><button class="btn sm ba" onclick="gsc('post',null)" style="margin-left:auto">Post →</button></div>
+    <div class="ob-step" id="ob3"><div class="ob-check" id="ob3-check">3</div><div><div style="font-size:13px;font-weight:500;color:var(--dk)">Browse the marketplace</div><div style="font-size:12px;color:var(--bd)">Find pallets, lumber, hardware, or services from other members</div></div><button class="btn sm ba" onclick="gsc('marketplace',null)" style="margin-left:auto">Browse →</button></div>
+  </div>
+  <div class="sgrid" id="dash-stats">
+    <div class="stc"><div class="stc-l">Active listings</div><div class="stc-v" id="d-listings">—</div><div class="stc-s">Your posted loads</div></div>
+    <div class="stc am"><div class="stc-l">Sales logged</div><div class="stc-v" id="d-sales">—</div><div class="stc-s">All time</div></div>
+    <div class="stc te"><div class="stc-l">Purchases logged</div><div class="stc-v" id="d-purch">—</div><div class="stc-s">All time</div></div>
+    <div class="stc"><div class="stc-l">Unread messages</div><div class="stc-v" id="d-msgs">—</div><div class="stc-s">In your inbox</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+    <div style="padding:13px 10px;border:1px solid var(--b);border-radius:var(--rl);text-align:center;cursor:pointer;background:#fff;transition:all .15s" onclick="gsc('post',null)" onmouseover="this.style.borderColor='var(--a)'" onmouseout="this.style.borderColor='rgba(0,0,0,.09)'"><div style="font-size:22px;margin-bottom:5px">+</div><div style="font-size:12px;font-weight:600;color:var(--dk)">Post listing</div><div style="font-size:11px;color:var(--bd)">New item or need</div></div>
+    <div style="padding:13px 10px;border:1px solid var(--b);border-radius:var(--rl);text-align:center;cursor:pointer;background:#fff;transition:all .15s" onclick="gsc('marketplace',null)" onmouseover="this.style.borderColor='var(--a)'" onmouseout="this.style.borderColor='rgba(0,0,0,.09)'"><div style="font-size:22px;margin-bottom:5px">&#9672;</div><div style="font-size:12px;font-weight:600;color:var(--dk)">Browse</div><div id="qa-mkt-count" style="font-size:11px;color:var(--bd)">Marketplace</div></div>
+    <div style="padding:13px 10px;border:1px solid var(--b);border-radius:var(--rl);text-align:center;cursor:pointer;background:#fff;transition:all .15s" onclick="gsc('messages',null)" onmouseover="this.style.borderColor='var(--a)'" onmouseout="this.style.borderColor='rgba(0,0,0,.09)'"><div style="font-size:22px;margin-bottom:5px">&#9993;</div><div style="font-size:12px;font-weight:600;color:var(--dk)">Messages</div><div style="font-size:11px;color:var(--bd)" id="qa-msgs">Direct inbox</div></div>
+    <div style="padding:13px 10px;border:1px solid var(--b);border-radius:var(--rl);text-align:center;cursor:pointer;background:#fff;transition:all .15s" onclick="gsc('myhub',null)" onmouseover="this.style.borderColor='var(--a)'" onmouseout="this.style.borderColor='rgba(0,0,0,.09)'"><div style="font-size:22px;margin-bottom:5px">&#9898;</div><div style="font-size:12px;font-weight:600;color:var(--dk)">My hub</div><div style="font-size:11px;color:var(--bd)">Company profile</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card"><div class="card-t">Recent sales <button class="btn sm" onclick="gsc('sales',null)">See all</button></div><div id="dash-sales-list"><div class="loading"><div class="spinner"></div></div></div></div>
+    <div class="card"><div class="card-t">Recent purchases <button class="btn sm" onclick="gsc('purchases',null)">See all</button></div><div id="dash-purch-list"><div class="loading"><div class="spinner"></div></div></div></div>
+  </div>
+</div>
+
+<!-- MARKETPLACE -->
+<div id="sc-marketplace" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Marketplace</h1><p id="mkt-count">Loading...</p></div><button class="btn ba" onclick="gsc('post',null)">+ Post listing</button></div>
+  <input type="text" class="search-bar" id="mkt-search" placeholder="Search listings — try 'GMA Grade A Compton' or 'dismantling service'..." oninput="filterListings()" style="margin-bottom:12px">
+  <div class="catbar">
+    <button class="cpill on" onclick="fcat('all',this)">All</button>
+    <button class="cpill" onclick="fcat('pallets',this)">Pallets</button>
+    <button class="cpill" onclick="fcat('lumber',this)">Wood stock</button>
+    <button class="cpill" onclick="fcat('hardware',this)">Hardware</button>
+    <button class="cpill" onclick="fcat('equipment',this)">Equipment</button>
+    <button class="cpill" onclick="fcat('services',this)">Services</button>
+    <button class="cpill" onclick="fcat('wanted',this)">Wanted</button>
+  </div>
+  <div class="lgrid" id="lgrid"><div class="loading"><div class="spinner"></div>Loading listings...</div></div>
+</div>
+
+<!-- COMPANIES -->
+<div id="sc-companies" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Company hub</h1><p id="cos-count">Loading...</p></div><button class="btn ba" onclick="gsc('myhub',null)">My hub</button></div>
+  <input type="text" class="search-bar" id="co-search" placeholder="Search by name, city, or specialty..." oninput="filterCos()" style="margin-bottom:12px">
+  <div class="catbar">
+    <button class="cpill on" onclick="fco('all',this)">All</button>
+    <button class="cpill" onclick="fco('pallets',this)">Pallet yards</button>
+    <button class="cpill" onclick="fco('lumber',this)">Lumber</button>
+    <button class="cpill" onclick="fco('hardware',this)">Hardware</button>
+    <button class="cpill" onclick="fco('equipment',this)">Equipment</button>
+    <button class="cpill" onclick="fco('services',this)">Services</button>
+  </div>
+  <div class="cogrid" id="cogrid"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+</div>
+
+<!-- COMPANY PROFILE -->
+<div id="sc-co-profile" class="asc" style="padding:0"><div id="co-profile-wrap"><div class="loading" style="padding:80px"><div class="spinner"></div></div></div></div>
+
+<!-- MY HUB -->
+<div id="sc-myhub" class="asc" style="padding:0">
+  <div class="coph">
+    <div class="coph-banner" id="myhub-banner" style="background:linear-gradient(135deg,#1C1A16 0%,#BA7517 100%)">
+      <div class="coph-av" id="myhub-av" style="background:#BA7517;color:#fff">?</div>
+    </div>
+    <div class="coph-body">
+      <div>
+        <div class="coph-name" id="myhub-name">Your company</div>
+        <div style="font-size:13px;color:var(--bd)" id="myhub-sub">—</div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="bdg bmem">Assoc. member</span><span class="bdg bver">Verified</span><span style="font-size:13px;color:var(--a);font-weight:500" id="myhub-rating">★ 5.0</span></div>
+      </div>
+      <div style="display:flex;gap:8px"><button class="btn sm" onclick="openEditHubModal()">Edit profile</button></div>
+    </div>
+  </div>
+  <div class="co-content">
+    <div style="background:var(--al);border:1px solid #FAC775;border-radius:var(--r);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div><div style="font-size:13px;font-weight:600;color:#633806">Beta period — free access</div><div style="font-size:12px;color:#854F0B;margin-top:2px">You're on PALX free. Subscriptions start next month. Thanks for being a founding member.</div></div>
+    </div>
+    <div class="sgrid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stc"><div class="stc-l">My listings</div><div class="stc-v" id="hub-lcount">—</div></div>
+      <div class="stc am"><div class="stc-l">Sales</div><div class="stc-v" id="hub-scount">—</div></div>
+      <div class="stc"><div class="stc-l">Purchases</div><div class="stc-v" id="hub-pcount">—</div></div>
+      <div class="stc"><div class="stc-l">Rating</div><div class="stc-v" id="hub-rating">5.0</div></div>
+    </div>
+    <div class="co-tabs">
+      <button class="co-tab on" onclick="mhtab('about',this)">About</button>
+      <button class="co-tab" onclick="mhtab('listings',this)">My listings</button>
+      <button class="co-tab" onclick="mhtab('reviews',this)">Reviews</button>
+      <button class="co-tab" onclick="mhtab('settings',this)">Settings</button>
+    </div>
+    <div id="mh-tab"></div>
+  </div>
+</div>
+
+<!-- MY LISTINGS -->
+<div id="sc-mylistings" class="asc">
+  <div class="ph"><div class="ph-l"><h1>My listings</h1><p>Manage your active and past listings</p></div><button class="btn ba" onclick="gsc('post',null)">+ New listing</button></div>
+  <div class="ftabs">
+    <button class="ftab on" onclick="fml('active',this)">Active</button>
+    <button class="ftab" onclick="fml('inactive',this)">Paused</button>
+  </div>
+  <div id="ml-body"><div class="loading"><div class="spinner"></div></div></div>
+</div>
+
+<!-- POST LISTING -->
+<div id="sc-post" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Post a listing</h1><p>Your form adapts to what you're selling</p></div></div>
+  <!-- Plan gate for free users over 3 listings -->
+  <div class="plan-gate" id="post-gate" style="display:none">
+    <div><div class="plan-gate-t">You've reached 3 free listings</div><div class="plan-gate-s">Upgrade to Member ($29/mo) for unlimited listings after our beta period ends.</div></div>
+    <button class="btn sm ba" onclick="alert('Subscriptions open next month — stay tuned!')">Upgrade soon</button>
+  </div>
+  <div style="max-width:660px" id="post-form">
+    <div class="wsteps"><div class="ws on" id="ws0">1. Category</div><div class="ws" id="ws1">2. Details &amp; photos</div><div class="ws" id="ws2">3. Pricing</div><div class="ws" id="ws3">4. Publish</div></div>
+    <div id="ps0">
+      <div class="fb"><div class="fb-t">What are you listing?</div>
+        <div class="ctiles">
+          <div class="ctile sel" onclick="sct('pallets',this)"><span class="ctile-ic">🪵</span><div style="font-size:13px;font-weight:500">Pallets</div></div>
+          <div class="ctile" onclick="sct('lumber',this)"><span class="ctile-ic">🌲</span><div style="font-size:13px;font-weight:500">Wood stock</div></div>
+          <div class="ctile" onclick="sct('hardware',this)"><span class="ctile-ic">🔩</span><div style="font-size:13px;font-weight:500">Hardware</div></div>
+          <div class="ctile" onclick="sct('equipment',this)"><span class="ctile-ic">&#9881;</span><div style="font-size:13px;font-weight:500">Equipment</div></div>
+          <div class="ctile" onclick="sct('services',this)"><span class="ctile-ic">🚚</span><div style="font-size:13px;font-weight:500">Services</div></div>
+          <div class="ctile" onclick="sct('wanted',this)"><span class="ctile-ic">📢</span><div style="font-size:13px;font-weight:500">Wanted</div></div>
+        </div>
+      </div>
+      <div class="wnav"><button class="btn" onclick="gsc('marketplace',null)">Cancel</button><button class="btn ba" onclick="pstep(1)">Next: Details &#8594;</button></div>
+    </div>
+    <div id="ps1" style="display:none">
+      <div class="fb"><div class="fb-t">Title *</div><div class="fg2"><input id="p-title" placeholder="e.g. 200x GMA 48×40 Grade A pallets – HT stamped"></div></div>
+      <div class="fb"><div class="fb-t">Specs</div><div id="spec-fields"></div></div>
+      <div class="fb">
+        <div class="fb-t">Photos <span style="font-size:12px;font-weight:400;color:var(--bd)">(up to 2 — first is your cover shot)</span></div>
+        <div class="upzone" id="upzone" onclick="document.getElementById('photo-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+          <div style="font-size:28px;margin-bottom:6px">📷</div>
+          <div style="font-weight:600;margin-bottom:3px">Click or drag photos here</div>
+          <div style="font-size:12px;color:var(--bd)">JPG or PNG · Max 5MB each · First photo is your cover</div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="handlePhotoSelect(event)">
+        <div class="photo-grid" id="photo-grid"></div>
+        <div style="font-size:12px;color:var(--bd);margin-top:8px" id="upload-status"></div>
+      </div>
+      <div class="fb"><div class="fb-t">Description</div><div class="fg2"><textarea id="p-desc" placeholder="Board condition, loading notes, minimum order, repeat availability..."></textarea></div>
+      <div class="fg2"><label>Tags (comma-separated)</label><input id="p-tags" placeholder="e.g. GMA, Grade A, HT stamped, 48x40, stringer"></div></div>
+      <div class="wnav"><button class="btn" onclick="pstep(0)">&#8592;</button><button class="btn ba" onclick="pstep(2)">Next: Pricing &#8594;</button></div>
+    </div>
+    <div id="ps2" style="display:none">
+      <div class="fb"><div class="fb-t">Pricing</div>
+        <div class="fg2r">
+          <div class="fg2"><label>Price *</label><input id="p-price" placeholder="e.g. 8.50"></div>
+          <div class="fg2"><label>Per</label><select id="p-unit"><option>each</option><option>per truckload</option><option>per bd ft</option><option>per MBF</option><option>per lb</option><option>per box</option><option>call for quote</option><option>best offer</option></select></div>
+        </div>
+        <div class="fg2r">
+          <div class="fg2"><label>Quantity available</label><input id="p-qty" placeholder="e.g. 500 pallets"></div>
+          <div class="fg2"><label>Min. order</label><input id="p-min" placeholder="e.g. 100 units"></div>
+        </div>
+      </div>
+      <div class="fb"><div class="fb-t">Location &amp; delivery</div>
+        <div class="fg2r">
+          <div class="fg2"><label>City</label><input id="p-city" placeholder="Compton"></div>
+          <div class="fg2"><label>ZIP</label><input id="p-zip" placeholder="90220"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer"><input type="checkbox" id="p-pickup" checked style="accent-color:#BA7517;width:16px;height:16px"> Pickup available</label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer"><input type="checkbox" id="p-delivery" style="accent-color:#BA7517;width:16px;height:16px"> Local delivery</label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer"><input type="checkbox" id="p-forklift" style="accent-color:#BA7517;width:16px;height:16px"> Forklift on site</label>
+        </div>
+        <div class="fg2" style="margin-top:12px"><label>Contact phone for this listing</label><input id="p-phone" placeholder="310-555-0000"></div>
+      </div>
+      <div class="wnav"><button class="btn" onclick="pstep(1)">&#8592;</button><button class="btn ba" onclick="pstep(3)">Preview &#8594;</button></div>
+    </div>
+    <div id="ps3" style="display:none">
+      <div id="p-preview" style="background:#fff;border:1px solid var(--b);border-radius:var(--rl);overflow:hidden;margin-bottom:12px"></div>
+      <div class="fb" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div><div style="font-size:14px;font-weight:600;color:var(--dk)">Ready to go live?</div><div style="font-size:12px;color:var(--bd)">Visible to all members immediately. Listing expires in 60 days.</div></div>
+        <button class="btn ba" id="pub-btn" onclick="publishListing()">Publish now</button>
+      </div>
+      <div class="wnav"><button class="btn" onclick="pstep(2)">&#8592; Edit</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- SALES TRACKER -->
+<div id="sc-sales" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Sales tracker</h1><p>Every deal you've sold</p></div><button class="btn ba" onclick="openLogModal('sale')">+ Log sale</button></div>
+  <div class="sgrid">
+    <div class="stc am"><div class="stc-l">Total revenue</div><div class="stc-v" id="st-tot">—</div></div>
+    <div class="stc"><div class="stc-l">Transactions</div><div class="stc-v" id="st-cnt">—</div></div>
+    <div class="stc"><div class="stc-l">Pending</div><div class="stc-v" id="st-pnd">—</div></div>
+    <div class="stc"><div class="stc-l">Complete</div><div class="stc-v" id="st-don">—</div></div>
+  </div>
+  <div class="ftabs" id="sales-tabs">
+    <button class="ftab on" onclick="sfil='all';loadSales()">All</button>
+    <button class="ftab" onclick="sfil='pending';loadSales()">Pending</button>
+    <button class="ftab" onclick="sfil='confirmed';loadSales()">Confirmed</button>
+    <button class="ftab" onclick="sfil='paid';loadSales()">Paid</button>
+    <button class="ftab" onclick="sfil='complete';loadSales()">Complete</button>
+  </div>
+  <div class="tbl-wrap"><div class="card" style="padding:0;overflow:hidden">
+    <table class="tbl"><thead><tr><th>Date</th><th>Item</th><th>Buyer</th><th>Total</th><th>Status</th><th>Notes</th><th></th></tr></thead>
+    <tbody id="sales-body"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table>
+  </div></div>
+  <div style="padding:8px 0;font-size:12px;color:var(--bd)">Click any status badge to advance it forward.</div>
+</div>
+
+<!-- PURCHASES TRACKER -->
+<div id="sc-purchases" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Purchase tracker</h1><p>Everything you've bought</p></div><button class="btn ba" onclick="openLogModal('purchase')">+ Log purchase</button></div>
+  <div class="sgrid">
+    <div class="stc te"><div class="stc-l">Total spent</div><div class="stc-v" id="pt-tot">—</div></div>
+    <div class="stc"><div class="stc-l">Transactions</div><div class="stc-v" id="pt-cnt">—</div></div>
+    <div class="stc"><div class="stc-l">Pending</div><div class="stc-v" id="pt-pnd">—</div></div>
+    <div class="stc"><div class="stc-l">Complete</div><div class="stc-v" id="pt-don">—</div></div>
+  </div>
+  <div class="ftabs">
+    <button class="ftab on" onclick="pfil='all';loadPurch()">All</button>
+    <button class="ftab" onclick="pfil='pending';loadPurch()">Pending</button>
+    <button class="ftab" onclick="pfil='confirmed';loadPurch()">Confirmed</button>
+    <button class="ftab" onclick="pfil='complete';loadPurch()">Complete</button>
+  </div>
+  <div class="tbl-wrap"><div class="card" style="padding:0;overflow:hidden">
+    <table class="tbl"><thead><tr><th>Date</th><th>Item</th><th>Seller</th><th>Total</th><th>Status</th><th>Notes</th><th></th></tr></thead>
+    <tbody id="purch-body"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table>
+  </div></div>
+</div>
+
+<!-- MESSAGES -->
+<div id="sc-messages" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Messages</h1><p id="msg-sub">Direct member messaging</p></div></div>
+  <div class="inbox">
+    <div class="tlist" id="tlist"><div class="loading"><div class="spinner"></div></div></div>
+    <div class="convo" id="convo"><div class="empty-state"><div class="es-ic">&#9993;</div><p>Select a conversation or message a company from their profile.</p></div></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="sc-admin" class="asc">
+  <div class="ph"><div class="ph-l"><h1>Admin panel</h1><p>Platform management</p></div></div>
+  <div class="co-tabs" style="margin-bottom:16px">
+    <button class="co-tab on" onclick="atab('prices',this)">Market prices</button>
+    <button class="co-tab" onclick="atab('news',this)">News</button>
+    <button class="co-tab" onclick="atab('users',this)">Users</button>
+    <button class="co-tab" onclick="atab('all-listings',this)">All listings</button>
+  </div>
+  <div id="admin-body"></div>
+</div>
+
+</div><!-- end main-area -->
+</div><!-- end app grid -->
+
+<!-- Mobile bottom nav -->
+<nav class="mob-nav">
+  <button class="mob-ni on" onclick="mobNav('dashboard',this)"><div class="mob-ni-ic">&#9638;</div>Home</button>
+  <button class="mob-ni" onclick="mobNav('marketplace',this)"><div class="mob-ni-ic">&#9672;</div>Market</button>
+  <button class="mob-ni" onclick="mobNav('post',this)"><div class="mob-ni-ic" style="background:var(--a);color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:-6px auto 0">+</div>Post</button>
+  <button class="mob-ni" onclick="mobNav('messages',this)"><div class="mob-ni-ic">&#9993;</div>Messages<span class="mob-bdg" id="mob-msg-bdg" style="display:none">0</span></button>
+  <button class="mob-ni" onclick="mobNav('myhub',this)"><div class="mob-ni-ic">&#9898;</div>My hub</button>
+</nav>
+
+</div><!-- end vapp -->
+<script>
+// ══════════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════════
+const BG={pallets:'#FAEEDA',lumber:'#E6F1FB',hardware:'#F1EFE8',equipment:'#FAECE7',services:'#E1F5EE',wanted:'#EAF3DE'};
+const IC={pallets:'🪵',lumber:'🌲',hardware:'🔩',equipment:'⚙️',services:'🚚',wanted:'📢'};
+const CL={pallets:'Pallets',lumber:'Wood stock',hardware:'Hardware',equipment:'Equipment',services:'Services',wanted:'Wanted'};
+const CB={pallets:'bp',lumber:'bl',hardware:'bh',equipment:'be',services:'bs',wanted:'bw'};
+const STATUSES=['pending','confirmed','paid','complete','cancelled'];
+const ST={pending:'sp',confirmed:'scn',paid:'spd',complete:'sco',cancelled:'sca'};
+const SL={pending:'Pending',confirmed:'Confirmed',paid:'Paid',complete:'Complete',cancelled:'Cancelled'};
+const AVC=['#BA7517','#0C447C','#27500A','#712B13','#085041','#3C3489','#633806'];
+const BNC=['linear-gradient(135deg,#1C1A16 0%,#BA7517 100%)','linear-gradient(135deg,#0C447C 0%,#378ADD 100%)','linear-gradient(135deg,#27500A 0%,#639922 100%)','linear-gradient(135deg,#712B13 0%,#D85A30 100%)','linear-gradient(135deg,#085041 0%,#1D9E75 100%)'];
+const SPEC_DEFS={
+  pallets:[['Style','s',['4-way entry','Regular (2-way)','Block']],['Size','s',['48×40 (GMA)','42×42','48×48','36×36','Custom']],['Condition','s',['New','Grade A','Grade B']],['Treatment','s',['None','Heat treated (HT)']],['IPPC marked','s',['Yes – IPPC stamped','No','Unknown']],['Weight (lbs each)','t','e.g. 42']],
+  lumber:[['Species','t','e.g. KD Pine, Douglas Fir'],['Grade','s',['#2 grade','#3 grade','Select','Construction','Reclaimed']],['Size','t','e.g. 2×4×8'],['Condition','s',['New/green','Kiln dried (KD)','Reclaimed/salvaged']]],
+  hardware:[['Type','t','e.g. Coil nails 1.75"'],['Size/gauge','t','e.g. 1.75" 15-degree'],['Material','s',['Galvanized','Bright','Stainless','Poly/plastic']]],
+  equipment:[['Type','t','e.g. 14" carbide blade'],['Condition','s',['New','Used – excellent','Used – good','As-is']],['Brand','t','Brand name if applicable']],
+  services:[['Service type','t','e.g. On-site dismantling'],['Rate structure','t','e.g. $0.45/pallet, $500/day'],['Minimum','t','e.g. 200 pallets minimum']],
+  wanted:[['What you need','t','Describe what you\'re looking for'],['Quantity needed','t','How many / how much'],['Target price','t','Budget or what you\'re willing to pay']]
+};
+
+let allListings=[], allCompanies=[], allSales=[], allPurch=[], allMsgs=[];
+let curCat='all', coFil='all', sfil='all', pfil='all', postCatSel='pallets', curThreadId=null;
+let photoFiles=[], photoUrls=[], msgChannel=null;
+
+// ══════════════════════════════════════════════════
+//  ROUTING
+// ══════════════════════════════════════════════════
+function gv(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById(id)?.classList.add('on');
+  if(id==='vl') loadLandingData();
+}
+
+function gsc(s,btn){
+  document.querySelectorAll('.asc').forEach(e=>e.classList.remove('on'));
+  document.getElementById('sc-'+s)?.classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const screens={dashboard:loadDashboard,marketplace:loadMarketplace,companies:loadCompanies,sales:loadSales,purchases:loadPurch,messages:loadMessages,mylistings:loadMyListings,myhub:loadMyHub,admin:loadAdmin,post:checkPostGate,'co-profile':()=>{}};
+  if(screens[s]) screens[s]();
+}
+
+function mobNav(s,btn){
+  document.querySelectorAll('.mob-ni').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  gsc(s,null);
+  // sync desktop sidebar
+  document.querySelectorAll('.ni').forEach(n=>{ if(n.textContent.trim().toLowerCase().startsWith(s.substring(0,4).toLowerCase())) n.classList.add('on'); });
+}
+
+// ══════════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════════
+async function initAuth(){
+  try {
+    const {data:{session}} = await db.auth.getSession();
+    if(session){ currentUser=session.user; await loadCurrentCompany(); enterApp(); }
+    else { gv('vl'); await loadLandingData(); }
+    db.auth.onAuthStateChange(async(ev,sess)=>{
+      if(ev==='SIGNED_IN'&&sess){ currentUser=sess.user; await loadCurrentCompany(); enterApp(); }
+      else if(ev==='SIGNED_OUT'){ currentUser=null; currentCompany=null; gv('vl'); }
+    });
+  } catch(e) { console.error('Auth init error:',e); gv('vl'); }
+}
+
+async function loadCurrentCompany(){
+  if(!currentUser) return;
+  try {
+    const {data,error}=await db.from('companies').select('*').eq('id',currentUser.id).single();
+    if(!error) currentCompany=data;
+  } catch(e){ console.error('Load company error:',e); }
+}
+
+function enterApp(){
+  closeAuthModal();
+  gv('vapp');
+  updateSidebar();
+  if(currentUser?.email===ADMIN_EMAIL){
+    document.getElementById('admin-nav')?.style.removeProperty('display');
+  }
+  loadDashboard();
+  subscribeMessages();
+}
+
+function updateSidebar(){
+  if(!currentCompany) return;
+  const ini=(currentCompany.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('sb-av',ini); set('sb-nm',currentCompany.name||'Your company');
+  set('sb-rl',(currentCompany.city?currentCompany.city+', CA':'SoCal Pallet Industry'));
+  set('mob-av',ini);
+  const mav=document.getElementById('mob-av');
+  if(mav) mav.style.background=currentCompany.color||'var(--al)';
+  const sbav=document.getElementById('sb-av');
+  if(sbav) sbav.style.background=currentCompany.color||'var(--al)';
+}
+
+async function doSignOut(){
+  if(msgChannel) msgChannel.unsubscribe();
+  await db.auth.signOut();
+  gv('vl');
+}
+
+// ─ AUTH MODAL ─
+function openAuthModal(mode){
+  document.getElementById('auth-modal')?.classList.add('on');
+  renderAuthModal(mode||'login');
+}
+function closeAuthModal(){ document.getElementById('auth-modal')?.classList.remove('on'); }
+function closeGenModal(){ document.getElementById('gen-modal')?.classList.remove('on'); }
+
+function renderAuthModal(mode){
+  const b=document.getElementById('auth-body');
+  if(mode==='login'){
+    b.innerHTML=`<h3>Welcome back</h3><div class="modal-sub">Sign in to your PALX account</div>
+    <div class="err" id="a-err"></div>
+    <div class="fg"><label>Email</label><input id="li-e" type="email" placeholder="jose@jrpalletco.com" autocomplete="email"></div>
+    <div class="fg"><label>Password</label><input id="li-p" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn ba" style="width:100%;padding:12px;margin-bottom:10px" onclick="doLogin()">Sign in &rarr;</button>
+    <div style="text-align:center;margin-bottom:10px"><a onclick="renderAuthModal('forgot')" style="font-size:13px;cursor:pointer;color:var(--a)">Forgot password?</a></div>
+    <div style="text-align:center;font-size:13px;color:var(--bd)">No account? <a onclick="renderAuthModal('signup')" style="color:var(--a);cursor:pointer;font-weight:500">Join free</a></div>`;
+  } else if(mode==='forgot'){
+    b.innerHTML=`<h3>Reset password</h3><div class="modal-sub">Enter your email and we'll send a reset link</div>
+    <div class="err" id="a-err"></div><div class="ok" id="a-ok"></div>
+    <div class="fg"><label>Email</label><input id="fp-e" type="email" placeholder="jose@jrpalletco.com" autocomplete="email"></div>
+    <button class="btn ba" style="width:100%;padding:12px;margin-bottom:10px" onclick="doForgot()">Send reset link</button>
+    <div style="text-align:center;font-size:13px"><a onclick="renderAuthModal('login')" style="color:var(--a);cursor:pointer">&larr; Back to sign in</a></div>`;
+  } else {
+    b.innerHTML=`<h3>Join PALX free</h3><div class="modal-sub">No subscription required during our beta launch.</div>
+    <div class="su-steps"><div class="su-dot on"></div><div class="su-dot"></div></div>
+    <div class="err" id="a-err"></div>
+    <div class="fg2r"><div class="fg"><label>First name *</label><input id="su-fn" placeholder="Jose" autocomplete="given-name"></div><div class="fg"><label>Last name *</label><input id="su-ln" placeholder="Rodriguez" autocomplete="family-name"></div></div>
+    <div class="fg"><label>Business name *</label><input id="su-biz" placeholder="JR Pallet Co."></div>
+    <div class="fg2r"><div class="fg"><label>City *</label><input id="su-city" placeholder="Compton" autocomplete="address-level2"></div><div class="fg"><label>Phone</label><input id="su-phone" placeholder="310-555-0000" autocomplete="tel" type="tel"></div></div>
+    <div class="fg"><label>Email *</label><input id="su-e" type="email" placeholder="jose@jrpalletco.com" autocomplete="email"></div>
+    <div class="fg"><label>Password * <span style="font-weight:400;color:var(--bd)">(8+ characters)</span></label><input id="su-p" type="password" placeholder="Create a password" autocomplete="new-password"></div>
+    <div class="fg"><label style="margin-bottom:8px">What do you deal in?</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        ${['pallets','lumber','hardware','equipment','services'].map(c=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:7px 10px;border:1px solid var(--bm);border-radius:var(--r)"><input type="checkbox" class="su-cat" value="${c}" checked style="accent-color:#BA7517;flex-shrink:0"> ${CL[c]}</label>`).join('')}
+      </div>
+    </div>
+    <button class="btn ba" style="width:100%;padding:12px" onclick="doSignup()">Create my free account &rarr;</button>
+    <div style="text-align:center;font-size:12px;color:var(--bd);margin-top:10px">Already have an account? <a onclick="renderAuthModal('login')" style="color:var(--a);cursor:pointer;font-weight:500">Sign in</a></div>`;
+  }
+}
+
+async function doLogin(){
+  const e=document.getElementById('li-e').value.trim();
+  const p=document.getElementById('li-p').value;
+  const err=document.getElementById('a-err');
+  err.className='err';
+  if(!e||!p){err.textContent='Please fill in all fields.';err.classList.add('on');return;}
+  const btn=document.querySelector('#auth-body .ba');
+  btn.textContent='Signing in...';btn.disabled=true;
+  try {
+    const {error}=await db.auth.signInWithPassword({email:e,password:p});
+    if(error){err.textContent=error.message;err.classList.add('on');btn.textContent='Sign in →';btn.disabled=false;}
+  } catch(ex){err.textContent='Connection error. Please try again.';err.classList.add('on');btn.textContent='Sign in →';btn.disabled=false;}
+}
+
+async function doForgot(){
+  const e=document.getElementById('fp-e').value.trim();
+  const err=document.getElementById('a-err');const ok=document.getElementById('a-ok');
+  err.className='err';ok.className='ok';
+  if(!e){err.textContent='Please enter your email.';err.classList.add('on');return;}
+  const btn=document.querySelector('#auth-body .ba');btn.textContent='Sending...';btn.disabled=true;
+  try {
+    const {error}=await db.auth.resetPasswordForEmail(e,{redirectTo:window.location.origin});
+    if(error){err.textContent=error.message;err.classList.add('on');}
+    else{ok.textContent='Reset link sent! Check your email inbox.';ok.classList.add('on');}
+  } catch(ex){err.textContent='Connection error.';err.classList.add('on');}
+  btn.textContent='Send reset link';btn.disabled=false;
+}
+
+async function doSignup(){
+  const fn=document.getElementById('su-fn').value.trim(),ln=document.getElementById('su-ln').value.trim();
+  const biz=document.getElementById('su-biz').value.trim(),city=document.getElementById('su-city').value.trim();
+  const phone=document.getElementById('su-phone').value.trim(),e=document.getElementById('su-e').value.trim();
+  const p=document.getElementById('su-p').value;
+  const cats=[...document.querySelectorAll('.su-cat:checked')].map(c=>c.value);
+  const err=document.getElementById('a-err');err.className='err';
+  if(!fn||!biz||!city||!e||!p){err.textContent='Please fill in all required fields.';err.classList.add('on');return;}
+  if(p.length<8){err.textContent='Password must be at least 8 characters.';err.classList.add('on');return;}
+  const btn=document.querySelector('#auth-body .ba');btn.textContent='Creating account...';btn.disabled=true;
+  try {
+    const {data,error}=await db.auth.signUp({email:e,password:p});
+    if(error){err.textContent=error.message;err.classList.add('on');btn.textContent='Create my free account →';btn.disabled=false;return;}
+    const ci=Math.floor(Math.random()*AVC.length);
+    const {error:dErr}=await db.from('companies').upsert({id:data.user.id,name:biz,owner_name:fn+' '+ln,city,phone,email:e,color:AVC[ci],banner:BNC[ci%BNC.length],plan:'free',verified:true,rating:5.0,review_count:0,cats});
+    if(dErr) console.error('Profile create error:',dErr);
+    // Fix 1: handle email confirmation requirement
+    if(!data.session){
+      const b=document.getElementById('auth-body');
+      b.innerHTML=`<div style="text-align:center;padding:8px 0">
+        <div style="font-size:48px;margin-bottom:16px">📬</div>
+        <h3 style="margin-bottom:8px">Check your inbox</h3>
+        <div class="modal-sub">We sent a confirmation link to <strong>${e}</strong>.<br>Click it to activate your account, then sign in.</div>
+        <button class="btn ba" style="width:100%;padding:12px;margin-top:20px" onclick="renderAuthModal('login')">Go to sign in &rarr;</button>
+        <div style="margin-top:12px;font-size:12px;color:var(--bd)">Didn't get it? Check your spam folder or <a style="color:var(--a);cursor:pointer" onclick="doSignup()">try again</a>.</div>
+      </div>`;
+      return;
+    }
+    currentUser=data.user;
+    await loadCurrentCompany();
+    enterApp();
+    localStorage.setItem('palx_new_user','1');
+  } catch(ex){err.textContent='Connection error. Please try again.';err.classList.add('on');btn.textContent='Create my free account →';btn.disabled=false;}
+}
+
+// ══════════════════════════════════════════════════
+//  LANDING DATA
+// ══════════════════════════════════════════════════
+async function loadLandingData(){
+  try {
+    const [{count:lc},{count:cc}]=await Promise.all([
+      db.from('listings').select('*',{count:'exact',head:true}).eq('status','active'),
+      db.from('companies').select('*',{count:'exact',head:true})
+    ]);
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    set('stat-listings',lc||0);set('stat-cos',cc||0);
+    const {data:cos}=await db.from('companies').select('id,name,city,cats,rating,color,banner,verified').order('created_at').limit(4);
+    const g=document.getElementById('landing-cos');
+    if(g&&cos?.length){
+      g.innerHTML=cos.map(c=>`<div style="background:#fff;border:1px solid var(--b);border-radius:var(--rxl);overflow:hidden;cursor:pointer;transition:all .15s" onclick="openAuthModal('signup')" onmouseover="this.style.borderColor='var(--a)'" onmouseout="this.style.borderColor='rgba(0,0,0,.09)'">
+        <div style="height:48px;background:${c.banner||BNC[0]}"></div>
+        <div style="padding:14px;text-align:center">
+          <div style="width:46px;height:46px;border-radius:50%;background:${c.color||'#BA7517'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin:-26px auto 10px;border:3px solid #fff">${(c.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+          <div style="font-size:14px;font-weight:600;color:var(--dk);margin-bottom:2px">${c.name}</div>
+          <div style="font-size:12px;color:var(--bd);margin-bottom:7px">${c.city||''}</div>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center">${(c.cats||[]).map(ct=>`<span class="bdg ${CB[ct]||''}" style="font-size:10px">${CL[ct]||ct}</span>`).join('')}</div>
+        </div></div>`).join('');
+    } else if(g){
+      g.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--bd);padding:32px;font-size:14px">Be the first company on PALX</div>';
+    }
+    await loadLiveMarketPulse();
+  } catch(e){ console.error('Landing data error:',e); }
+}
+
+async function loadLiveMarketPulse(){
+  try {
+    const [{data:prices},{data:news}]=await Promise.all([
+      db.from('market_prices').select('*').order('category').order('item_name'),
+      db.from('news_items').select('*').eq('active',true).order('published_date',{ascending:false}).limit(6)
+    ]);
+    const ti={up:'▲',down:'▼',flat:'—'};const tc={up:'up',down:'dn',flat:'fl'};
+    const mg=document.getElementById('landing-market');
+    if(!mg) return;
+    const priceHTML=prices?.length?prices.map(p=>`<div class="prr"><div><div class="prn">${p.item_name}</div><div class="prc" style="text-transform:capitalize">${p.category}</div></div><div><div class="prp">$${p.price_low}${p.price_high&&p.price_high!==p.price_low?'–$'+p.price_high:''} / ${p.price_unit}</div><div class="prch ${tc[p.trend]||'fl'}">${ti[p.trend]||'—'} ${p.trend_pct||(p.trend==='flat'?'Flat':'')}</div></div></div>`).join(''):'<div style="font-size:13px;color:var(--bd);padding:12px">Price data loading...</div>';
+    const catCol={market:'nc-m',alert:'nc-al',association:'nc-a',opportunity:'nc-a'};
+    const catLbl={market:'Market',alert:'Compliance alert',association:'PALX update',opportunity:'Buying opportunity'};
+    const newsHTML=news?.length?news.map(n=>`<div class="ni-item"><div class="${catCol[n.category]||'nc-m'}">${catLbl[n.category]||n.category}</div><div class="ni-hl">${n.headline}</div><div class="ni-mt">${n.source||'PALX'} · ${new Date(n.published_date).toLocaleDateString('en-US',{month:'long',year:'numeric'})}</div></div>`).join(''):'<div style="font-size:13px;color:var(--bd);padding:12px">News loading...</div>';
+    mg.innerHTML=`<div class="mpc"><div class="mpc-t"><div class="ldot"></div>SoCal market prices — from PALX listings</div>${priceHTML}</div><div class="mpc"><div class="mpc-t">Industry news &amp; alerts</div>${newsHTML}</div>`;
+  } catch(e){ console.error('Market pulse error:',e); }
+}
+
+// ══════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════
+async function loadDashboard(){
+  if(!currentUser) return;
+  try {
+    const d=new Date();
+    const h=d.getHours();
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    set('dash-greet',`Good ${h<12?'morning':h<17?'afternoon':'evening'}, ${currentCompany?.owner_name?.split(' ')[0]||'there'}`);
+    set('dash-date',d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}));
+    const[{count:lc},{count:sc},{count:pc},{count:mc}]=await Promise.all([
+      db.from('listings').select('*',{count:'exact',head:true}).eq('company_id',currentUser.id).eq('status','active'),
+      db.from('sales').select('*',{count:'exact',head:true}).eq('seller_id',currentUser.id),
+      db.from('purchases').select('*',{count:'exact',head:true}).eq('buyer_id',currentUser.id),
+      db.from('messages').select('*',{count:'exact',head:true}).eq('to_id',currentUser.id).eq('read',false),
+    ]);
+    set('d-listings',lc||0);set('d-sales',sc||0);set('d-purch',pc||0);set('d-msgs',mc||0);
+    set('qa-mkt-count',(lc||0)+' active');
+    updateMsgBadge(mc||0);
+    checkOnboarding(lc,sc,pc);
+    const[{data:sales},{data:purch}]=await Promise.all([
+      db.from('sales').select('*').eq('seller_id',currentUser.id).order('created_at',{ascending:false}).limit(4),
+      db.from('purchases').select('*').eq('buyer_id',currentUser.id).order('created_at',{ascending:false}).limit(4),
+    ]);
+    renderDashList('dash-sales-list',sales,'sale');
+    renderDashList('dash-purch-list',purch,'purchase');
+  } catch(e){ console.error('Dashboard error:',e); }
+}
+
+function renderDashList(elId,data,type){
+  const el=document.getElementById(elId);if(!el)return;
+  if(!data?.length){
+    el.innerHTML=`<div class="empty-state"><div class="es-ic">${type==='sale'?'📈':'🛒'}</div><p>No ${type}s logged yet</p><button class="btn sm ${type==='sale'?'ba':'bt'}" onclick="openLogModal('${type}')">Log your first ${type}</button></div>`;
+    return;
+  }
+  el.innerHTML=data.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(0,0,0,.06)"><div style="min-width:0;flex:1"><div style="font-size:13px;color:var(--dk);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.item||'—'}</div><div style="font-size:11px;color:var(--bd)">${type==='sale'?r.buyer:r.seller} · ${new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div></div><div style="text-align:right;flex-shrink:0;margin-left:8px"><div style="font-size:13px;font-weight:600;color:${type==='sale'?'#BA7517':'#0F6E56'}">${r.total?'$'+Number(r.total).toLocaleString():''}</div><span class="bdg ${ST[r.status]||'sp'}">${SL[r.status]||r.status}</span></div></div>`).join('');
+}
+
+// ─ ONBOARDING ─
+function checkOnboarding(lc,sc,pc){
+  const dismissed=localStorage.getItem('palx_ob_dismissed');
+  if(dismissed) return;
+  const card=document.getElementById('onboarding-card');if(!card)return;
+  const hasProfile=currentCompany?.description?.length>0;
+  const hasListing=lc>0;
+  // Fix 4: if user has any activity they've browsed; mark localStorage too
+  const hasBrowsed=localStorage.getItem('palx_browsed')||(lc>0||sc>0||pc>0);
+  if((lc>0||sc>0||pc>0)&&!localStorage.getItem('palx_browsed'))localStorage.setItem('palx_browsed','1');
+  const allDone=hasProfile&&hasListing&&hasBrowsed;
+  if(allDone){card.style.display='none';return;}
+  card.style.display='block';
+  const setCheck=(id,done)=>{const el=document.getElementById(id);if(!el)return;el.className='ob-check'+(done?' done':'');el.textContent=done?'✓':el.textContent;};
+  setCheck('ob1-check',hasProfile);
+  setCheck('ob2-check',hasListing);
+  setCheck('ob3-check',!!hasBrowsed);
+}
+function dismissOnboarding(){localStorage.setItem('palx_ob_dismissed','1');document.getElementById('onboarding-card').style.display='none';}
+
+// ══════════════════════════════════════════════════
+//  MARKETPLACE
+// ══════════════════════════════════════════════════
+async function loadMarketplace(){
+  localStorage.setItem('palx_browsed','1');
+  const g=document.getElementById('lgrid');
+  if(g)g.innerHTML='<div class="loading"><div class="spinner"></div>Loading listings...</div>';
+  try {
+    const {data,count}=await db.from('listings').select('*,companies(name,city,color)',{count:'exact'}).eq('status','active').order('created_at',{ascending:false});
+    allListings=data||[];
+    const mc=document.getElementById('mkt-count');if(mc)mc.textContent=`${allListings.length} active listings`;
+    const qa=document.getElementById('qa-mkt-count');if(qa)qa.textContent=allListings.length+' listings';
+    renderListings();
+  } catch(e){ console.error('Marketplace error:',e);const g=document.getElementById('lgrid');if(g)g.innerHTML='<div class="empty-state"><div class="es-ic">⚠️</div><p>Couldn\'t load listings. Check your connection.</p></div>'; }
+}
+
+function renderListings(){
+  const g=document.getElementById('lgrid');if(!g)return;
+  const q=(document.getElementById('mkt-search')?.value||'').toLowerCase().trim();
+  let list=curCat==='all'?[...allListings]:allListings.filter(l=>l.category===curCat);
+  if(q) list=list.filter(l=>(l.title||'').toLowerCase().includes(q)||(l.description||'').toLowerCase().includes(q)||(l.tags||[]).some(t=>t.toLowerCase().includes(q))||(l.city||'').toLowerCase().includes(q)||(l.companies?.name||'').toLowerCase().includes(q));
+  if(!list.length){g.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="es-ic">${IC[curCat]||'📦'}</div><p>${q?`No results for "${q}"`:'No listings yet — be the first!'}</p><button class="btn sm ba" onclick="gsc('post',null)">Post a listing</button></div>`;return;}
+  // Check expiry warnings
+  const now=new Date();const warnDate=new Date(now);warnDate.setDate(warnDate.getDate()-50);
+  g.innerHTML=list.map(l=>{
+    const expiring=new Date(l.created_at)<warnDate;
+    const coverStyle=l.cover_url?`style="background-image:url('${l.cover_url}');background-size:cover;background-position:center"`:` style="background:${BG[l.category]||'#f5f5f5'}"`;
+    return `<div class="lcard" onclick="openListing('${l.id}')">
+      <div class="lcard-img"${coverStyle}>${l.cover_url?'':(IC[l.category]||'📦')}</div>
+      <div class="lcard-body">
+        <div style="margin-bottom:5px"><span class="bdg ${CB[l.category]||''}">${CL[l.category]||l.category}</span></div>
+        <div style="font-size:13px;font-weight:500;color:var(--dk);margin-bottom:3px;line-height:1.3">${l.title}</div>
+        <div style="font-size:16px;font-weight:600;color:var(--dk)">${l.price||'—'}<span style="font-size:11px;font-weight:400;color:var(--bd)"> / ${l.price_unit||'each'}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px;margin:5px 0">${(l.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--bd);padding-top:7px;border-top:1px solid rgba(0,0,0,.06);margin-top:5px">
+          <span style="cursor:pointer;color:var(--a);font-weight:500" onclick="event.stopPropagation();openCoProfile('${l.company_id}')">${l.companies?.name||'—'}</span>
+          <span>${l.city||''}</span>
+        </div>
+        ${expiring?`<div class="expiry-warn">⏳ Expiring soon — renew to keep active</div>`:''}
+      </div></div>`;
+  }).join('');
+}
+
+function fcat(c,btn){curCat=c;document.querySelectorAll('#sc-marketplace .catbar .cpill').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderListings();}
+function filterListings(){renderListings();}
+
+async function openListing(id){
+  const l=allListings.find(x=>x.id===id);if(!l)return;
+  // Increment views
+  db.from('listings').update({views:(l.views||0)+1}).eq('id',id);
+  // Show listing detail in gen modal
+  const photos=l.photos||[];
+  document.getElementById('gen-modal').classList.add('on');
+  let _gi=0;
+  const _gset=(i)=>{_gi=i;const m=document.getElementById('_gm');if(m)m.src=photos[i];document.querySelectorAll('._gt').forEach((t,j)=>{t.style.opacity=j===i?'1':'.45';t.style.outline=j===i?'2px solid var(--a)':'none';});};
+  document.getElementById('gen-body').innerHTML=`
+    <div style="margin:-28px -28px ${photos.length?'0':'16px'};background:${BG[l.category]};overflow:hidden;border-radius:var(--rxl) var(--rxl) 0 0">
+      ${photos.length
+        ?`<div style="position:relative">
+            <img id="_gm" src="${photos[0]}" style="width:100%;max-height:260px;object-fit:cover;display:block">
+            ${photos.length>1?`<button onclick="(()=>{const n=(_gi-1+${photos.length})%${photos.length};_gset(n);})()" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&#8249;</button>
+             <button onclick="(()=>{const n=(_gi+1)%${photos.length};_gset(n);})()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&#8250;</button>`:''}
+          </div>
+          ${photos.length>1?`<div style="display:flex;gap:6px;padding:10px 0 0;overflow-x:auto;scrollbar-width:thin">${photos.map((u,i)=>`<img class="_gt" src="${u}" onclick="_gset(${i})" style="width:64px;height:52px;object-fit:cover;border-radius:6px;cursor:pointer;flex-shrink:0;opacity:${i===0?'1':'.45'};transition:opacity .15s;outline:${i===0?'2px solid var(--a)':'none'}">`).join('')}</div><div style="height:10px"></div>`:''}`
+        :`<div style="height:160px;display:flex;align-items:center;justify-content:center;font-size:48px">${IC[l.category]||''}</div>`}
+    </div>
+    <span class="bdg ${CB[l.category]||''}">${CL[l.category]||l.category}</span>
+    <h3 style="margin:8px 0 4px;font-size:20px">${l.title}</h3>
+    <div style="font-size:26px;font-weight:600;color:var(--dk);margin-bottom:4px">${l.price?'$'+l.price:''}<span style="font-size:14px;font-weight:400;color:var(--bd)"> / ${l.price_unit||'each'}</span></div>
+    <div style="font-size:13px;color:var(--bd);margin-bottom:12px">${l.city||''} · Posted ${new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+    ${l.description?`<p style="font-size:14px;color:var(--bd);line-height:1.7;margin-bottom:12px">${l.description}</p>`:''}
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">${(l.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    ${photos.length>1?`<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px">${photos.slice(1).map(u=>`<img src="${u}" style="height:70px;width:90px;object-fit:cover;border-radius:var(--r);flex-shrink:0">`).join('')}</div>`:''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${currentUser&&currentUser.id!==l.company_id?`<button class="btn ba" onclick="startMsg('${l.company_id}','${(l.companies?.name||'').replace(/'/g,'\\\'')}')" style="flex:1">Message seller</button>`:''}
+      ${l.phone?`<button class="btn" style="flex:1" onclick="window.open('tel:${l.phone}')">Call ${l.phone}</button>`:''}
+    </div>
+    ${l.pickup||l.delivery||l.forklift?`<div style="font-size:12px;color:var(--bd);margin-top:10px;display:flex;gap:10px">${l.pickup?'✓ Pickup':''}${l.delivery?'✓ Delivery':''}${l.forklift?'✓ Forklift on site':''}</div>`:''}`;
+}
+
+// ══════════════════════════════════════════════════
+//  COMPANIES
+// ══════════════════════════════════════════════════
+async function loadCompanies(){
+  const g=document.getElementById('cogrid');if(g)g.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try {
+    const {data}=await db.from('companies').select('*').order('name');
+    allCompanies=data||[];
+    const cc=document.getElementById('cos-count');if(cc)cc.textContent=`${allCompanies.length} verified companies in SoCal`;
+    renderCos();
+  } catch(e){ console.error('Companies error:',e); }
+}
+function renderCos(){
+  const g=document.getElementById('cogrid');if(!g)return;
+  const q=(document.getElementById('co-search')?.value||'').toLowerCase().trim();
+  let list=coFil==='all'?[...allCompanies]:allCompanies.filter(c=>(c.cats||[]).includes(coFil));
+  if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.city||'').toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q)||(c.specs||[]).some(s=>s.toLowerCase().includes(q)));
+  if(!list.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="es-ic">🏢</div><p>No companies match that search</p></div>';return;}
+  g.innerHTML=list.map(c=>`<div class="cocard" onclick="openCoProfile('${c.id}')">
+    <div class="co-banner" style="background:${c.banner||BNC[0]}">${c.plan==='pro'?'⭐ Pro':''}</div>
+    <div class="co-body">
+      <div class="co-av" style="background:${c.color||'#BA7517'}">${(c.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--dk);margin-bottom:2px">${c.name||'—'} ${c.verified?'<span style="color:#27500A;font-size:11px">✓</span>':''}</div>
+      <div style="font-size:12px;color:var(--bd);margin-bottom:7px">${c.city||''}</div>
+      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px">${(c.cats||[]).map(ct=>`<span class="bdg ${CB[ct]||''}" style="font-size:10px">${CL[ct]||ct}</span>`).join('')}</div>
+      <div style="font-size:12px;color:var(--bd);line-height:1.5;margin-bottom:9px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${c.description||''}</div>
+      <div style="display:flex;gap:12px;font-size:12px;color:var(--bd);padding-top:9px;border-top:1px solid var(--b)"><span><b style="color:var(--dk)">${c.rating||5.0}</b> ★</span><span><b style="color:var(--dk)">${c.review_count||0}</b> reviews</span></div>
+    </div></div>`).join('');
+}
+function fco(f,btn){coFil=f;document.querySelectorAll('#sc-companies .catbar .cpill').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderCos();}
+function filterCos(){renderCos();}
+
+async function openCoProfile(id){
+  document.querySelectorAll('.asc').forEach(e=>e.classList.remove('on'));
+  document.getElementById('sc-co-profile').classList.add('on');
+  document.getElementById('co-profile-wrap').innerHTML='<div class="loading" style="padding:80px"><div class="spinner"></div></div>';
+  try {
+    const[{data:c},{data:listings}]=await Promise.all([
+      db.from('companies').select('*').eq('id',id).single(),
+      db.from('listings').select('*').eq('company_id',id).eq('status','active').order('created_at',{ascending:false})
+    ]);
+    if(!c){document.getElementById('co-profile-wrap').innerHTML='<div class="loading">Company not found.</div>';return;}
+    const ini=(c.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2);
+    const isMe=currentUser&&currentUser.id===id;
+    document.getElementById('co-profile-wrap').innerHTML=`
+      <div class="coph">
+        <div class="coph-banner" style="background:${c.banner||BNC[0]}"><div class="coph-av" style="background:${c.color||'#BA7517'}">${ini}</div></div>
+        <div class="coph-body">
+          <div>
+            <div class="coph-name">${c.name}${c.verified?' <span style="color:#27500A;font-size:14px">✓</span>':''}</div>
+            <div style="font-size:13px;color:var(--bd)">${(c.description||'').split('.')[0]}.</div>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="bdg bmem">Assoc. member</span>${c.verified?'<span class="bdg bver">Verified</span>':''}<span style="font-size:13px;color:var(--a);font-weight:500">★ ${c.rating||5.0} (${c.review_count||0})</span></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${!isMe?`<button class="btn sm ba" onclick="startMsg('${id}','${(c.name||'').replace(/'/g,"\\'")}')">Message</button>`:''}
+            ${c.phone?`<button class="btn sm">Call ${c.phone}</button>`:''}
+            <button class="btn sm" onclick="loadCompanies();gsc('companies',null)">&#8592; Back</button>
+          </div>
+        </div>
+      </div>
+      <div class="co-content">
+        <div class="sgrid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stc"><div class="stc-l">Active listings</div><div class="stc-v">${listings?.length||0}</div></div>
+          <div class="stc am"><div class="stc-l">Rating</div><div class="stc-v">${c.rating||5.0}</div></div>
+          <div class="stc"><div class="stc-l">Reviews</div><div class="stc-v">${c.review_count||0}</div></div>
+        </div>
+        <div class="co-ag">
+          <div>
+            <div class="card" style="margin-bottom:12px"><div class="card-t">About ${c.name}</div>
+              <p style="font-size:14px;color:var(--bd);line-height:1.7;margin-bottom:14px">${c.description||'No description yet.'}</p>
+              ${(c.specs||[]).length?`<div style="font-size:13px;font-weight:600;color:var(--dk);margin-bottom:8px">Specialties</div><div>${c.specs.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>`:''}
+            </div>
+            <div class="card"><div class="card-t">Listings (${listings?.length||0})</div>
+              ${listings?.length?listings.slice(0,4).map(l=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.06);cursor:pointer" onclick="openListing('${l.id}')"><div style="width:40px;height:40px;border-radius:6px;background:${BG[l.category]||'#f5f5f5'};${l.cover_url?`background-image:url('${l.cover_url}');background-size:cover;background-position:center`:'display:flex;align-items:center;justify-content:center;font-size:18px'};flex-shrink:0">${l.cover_url?'':(IC[l.category]||'')}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;color:var(--dk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.title}</div><div style="font-size:12px;color:var(--a);font-weight:500">$${l.price} / ${l.price_unit}</div></div></div>`).join(''):'<div style="font-size:13px;color:var(--bd);padding:12px 0">No active listings.</div>'}
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:12px"><div class="card-t">Contact</div>
+              <div class="co-ig">
+                ${c.phone?`<div class="co-ic"><div class="co-il">Phone</div><div class="co-iv">${c.phone}</div></div>`:''}
+                ${c.email?`<div class="co-ic"><div class="co-il">Email</div><div class="co-iv" style="font-size:12px">${c.email}</div></div>`:''}
+                <div class="co-ic"><div class="co-il">City</div><div class="co-iv">${c.city||'—'}</div></div>
+                ${c.area?`<div class="co-ic"><div class="co-il">Service area</div><div class="co-iv" style="font-size:12px">${c.area}</div></div>`:''}
+              </div>
+            </div>
+            <div class="card"><div class="card-t">Reviews</div>
+              <div class="empty-state" style="padding:20px"><div class="es-ic" style="font-size:28px">⭐</div><p>Reviews appear here after transactions.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  } catch(e){ console.error('Profile error:',e); document.getElementById('co-profile-wrap').innerHTML='<div class="loading">Error loading profile.</div>'; }
+}
+
+// ══════════════════════════════════════════════════
+//  MY HUB
+// ══════════════════════════════════════════════════
+async function loadMyHub(){
+  if(!currentUser) return;
+  try {
+    await loadCurrentCompany();
+    const c=currentCompany;if(!c)return;
+    const ini=(c.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    const seta=(id,attr,v)=>{const el=document.getElementById(id);if(el)el.setAttribute(attr,v);};
+    document.getElementById('myhub-av').textContent=ini;
+    document.getElementById('myhub-av').style.background=c.color||'#BA7517';
+    document.getElementById('myhub-banner').style.background=c.banner||BNC[0];
+    set('myhub-name',c.name||'Your company');
+    set('myhub-sub',(c.city?c.city+', CA · ':'')+((c.cats||[]).map(ct=>CL[ct]).join(' · ')));
+    set('myhub-rating','★ '+(c.rating||5.0));
+    const[{count:lc},{count:sc},{count:pc}]=await Promise.all([
+      db.from('listings').select('*',{count:'exact',head:true}).eq('company_id',currentUser.id).eq('status','active'),
+      db.from('sales').select('*',{count:'exact',head:true}).eq('seller_id',currentUser.id),
+      db.from('purchases').select('*',{count:'exact',head:true}).eq('buyer_id',currentUser.id),
+    ]);
+    set('hub-lcount',lc||0);set('hub-scount',sc||0);set('hub-pcount',pc||0);
+    set('hub-rating',c.rating||5.0);
+    mhtab('about',document.querySelector('.co-tab'));
+  } catch(e){ console.error('My hub error:',e); }
+}
+
+function mhtab(t,btn){
+  document.querySelectorAll('.co-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const el=document.getElementById('mh-tab');if(!el)return;
+  const c=currentCompany;
+  if(t==='about'){
+    el.innerHTML=`<div class="co-ag"><div>
+      <div class="card" style="margin-bottom:12px"><div class="card-t">Your public profile <button class="btn sm" onclick="openEditHubModal()">Edit</button></div>
+        <p style="font-size:14px;color:var(--bd);line-height:1.7;margin-bottom:14px">${c?.description||'<i>No description yet — add one so buyers know what you offer.</i>'}</p>
+        ${(c?.specs||[]).length?`<div style="font-size:13px;font-weight:600;color:var(--dk);margin-bottom:8px">Specialties</div><div>${c.specs.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>`:''}
+      </div>
+      <button class="btn ba" style="width:100%" onclick="openCoProfile('${currentUser.id}')">Preview your public hub →</button>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:12px"><div class="card-t">Contact info</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div><span style="color:var(--bd)">Phone:</span> <span style="color:var(--dk);font-weight:500">${c?.phone||'—'}</span></div>
+          <div><span style="color:var(--bd)">Email:</span> <span style="color:var(--dk);font-weight:500">${c?.email||'—'}</span></div>
+          <div><span style="color:var(--bd)">City:</span> <span style="color:var(--dk);font-weight:500">${c?.city||'—'}</span></div>
+          <div><span style="color:var(--bd)">Service area:</span> <span style="color:var(--dk);font-weight:500">${c?.area||'—'}</span></div>
+        </div>
+        <button class="btn sm" style="margin-top:12px;width:100%" onclick="openEditHubModal()">Edit profile</button>
+      </div>
+    </div></div>`;
+  } else if(t==='listings'){
+    loadHubListings(el);
+  } else if(t==='reviews'){
+    el.innerHTML='<div class="empty-state"><div class="es-ic">⭐</div><p>Reviews from buyers will appear here after deals.</p></div>';
+  } else {
+    el.innerHTML=`<div class="two-col">
+      <div class="card"><div class="card-t">Hub visibility</div>
+        ${[['Show in company directory','Visible to all members'],['Show phone number','Publicly on your profile'],['Allow direct messaging','Members can message you'],['Deal alerts','When market prices change']].map(([t,d])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--b)"><div><div style="font-size:13px;font-weight:500;color:var(--dk)">${t}</div><div style="font-size:12px;color:var(--bd)">${d}</div></div><button class="tog on" onclick="this.classList.toggle('on')"></button></div>`).join('')}
+      </div>
+      <div class="card"><div class="card-t">Account</div>
+        <div style="font-size:13px;color:var(--bd);margin-bottom:14px">Signed in as ${currentUser?.email}</div>
+        <button class="btn" style="width:100%;margin-bottom:8px" onclick="renderAuthModal('forgot');openAuthModal('forgot')">Change password</button>
+        <button class="btn" style="width:100%;color:#791F1F" onclick="doSignOut()">Sign out</button>
+      </div>
+    </div>`;
+  }
+}
+
+async function loadHubListings(el){
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const {data}=await db.from('listings').select('*').eq('company_id',currentUser.id).order('created_at',{ascending:false});
+    if(!data?.length){el.innerHTML=`<div class="empty-state"><div class="es-ic">🪵</div><p>No listings yet</p><button class="btn sm ba" onclick="gsc('post',null)">Post your first listing</button></div>`;return;}
+    el.innerHTML=data.map(l=>{
+      const warnDate=new Date();warnDate.setDate(warnDate.getDate()-50);
+      const expiring=new Date(l.created_at)<warnDate&&l.status==='active';
+      return `<div style="background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:13px;display:flex;gap:12px;margin-bottom:8px;align-items:center">
+        <div style="width:52px;height:52px;border-radius:var(--r);background:${BG[l.category]||'#f5f5f5'};${l.cover_url?`background-image:url('${l.cover_url}');background-size:cover;background-position:center`:'display:flex;align-items:center;justify-content:center;font-size:22px'};flex-shrink:0">${l.cover_url?'':(IC[l.category]||'')}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:500;color:var(--dk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.title}</div>
+          <div style="font-size:13px;color:#BA7517;font-weight:600">${l.price?'$'+l.price+' / '+l.price_unit:''}</div>
+          <span class="bdg ${l.status==='active'?'sco':'sp'}" style="font-size:10px">${l.status}</span>
+          ${expiring?'<span class="bdg" style="background:#FAEEDA;color:#633806;font-size:10px;margin-left:4px">⏳ Expiring soon</span>':''}
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          ${expiring?`<button class="btn sm ba" onclick="renewListing('${l.id}')">Renew</button>`:''}
+          <button class="btn sm" onclick="toggleListing('${l.id}','${l.status}')">${l.status==='active'?'Pause':'Activate'}</button>
+        </div></div>`;
+    }).join('');
+  } catch(e){ el.innerHTML='<div class="empty-state"><div class="es-ic">⚠️</div><p>Error loading listings.</p></div>'; }
+}
+
+async function toggleListing(id,cur){
+  try { await db.from('listings').update({status:cur==='active'?'inactive':'active'}).eq('id',id); loadHubListings(document.getElementById('mh-tab')); }
+  catch(e){ alert('Error updating listing'); }
+}
+async function renewListing(id){
+  try { await db.from('listings').update({created_at:new Date().toISOString(),status:'active'}).eq('id',id); loadHubListings(document.getElementById('mh-tab')); }
+  catch(e){ alert('Error renewing listing'); }
+}
+
+function openEditHubModal(){
+  const c=currentCompany;
+  document.getElementById('gen-modal').classList.add('on');
+  document.getElementById('gen-body').innerHTML=`
+    <h3>Edit your hub</h3><div class="modal-sub">Your public company page — buyers see all of this.</div>
+    <div class="ok" id="hub-ok"></div><div class="err" id="hub-err"></div>
+    <div class="fg"><label>Business name</label><input id="eh-nm" value="${c?.name||''}"></div>
+    <div class="fg2r"><div class="fg"><label>City</label><input id="eh-city" value="${c?.city||''}"></div><div class="fg"><label>Phone</label><input id="eh-phone" value="${c?.phone||''}"></div></div>
+    <div class="fg"><label>Service area</label><input id="eh-area" value="${c?.area||''}" placeholder="e.g. All LA County, OC"></div>
+    <div class="fg"><label>Business description</label><textarea id="eh-desc" style="min-height:90px">${c?.description||''}</textarea></div>
+    <div class="fg"><label>Specialties <span style="font-weight:400;color:var(--bd)">(comma-separated)</span></label><input id="eh-specs" value="${(c?.specs||[]).join(', ')}" placeholder="e.g. GMA pallets, Dismantling, HT stamped"></div>
+    <div class="fg"><label>What do you deal in?</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        ${['pallets','lumber','hardware','equipment','services'].map(ct=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:7px 10px;border:1px solid var(--bm);border-radius:var(--r)"><input type="checkbox" class="eh-cat" value="${ct}" ${(c?.cats||[]).includes(ct)?'checked':''} style="accent-color:#BA7517"> ${CL[ct]}</label>`).join('')}
+      </div>
+    </div>
+    <button class="btn ba" style="width:100%;padding:12px" onclick="saveHub()">Save changes</button>`;
+}
+
+async function saveHub(){
+  const set=(id)=>document.getElementById(id)?.value?.trim()||'';
+  const cats=[...document.querySelectorAll('.eh-cat:checked')].map(c=>c.value);
+  const specs=set('eh-specs').split(',').map(s=>s.trim()).filter(Boolean);
+  const ok=document.getElementById('hub-ok');const err=document.getElementById('hub-err');
+  ok.className='ok';err.className='err';
+  try {
+    const {error}=await db.from('companies').update({name:set('eh-nm'),city:set('eh-city'),phone:set('eh-phone'),area:set('eh-area'),description:set('eh-desc'),specs,cats}).eq('id',currentUser.id);
+    if(error){err.textContent=error.message;err.classList.add('on');return;}
+    ok.textContent='Saved!';ok.classList.add('on');
+    await loadCurrentCompany();updateSidebar();
+    setTimeout(()=>{closeGenModal();loadMyHub();},900);
+  } catch(e){ err.textContent='Error saving. Please try again.';err.classList.add('on'); }
+}
+
+// ══════════════════════════════════════════════════
+//  MY LISTINGS
+// ══════════════════════════════════════════════════
+let mlFil='active';
+async function loadMyListings(){
+  const el=document.getElementById('ml-body');if(!el)return;
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const {data}=await db.from('listings').select('*').eq('company_id',currentUser.id).eq('status',mlFil).order('created_at',{ascending:false});
+    if(!data?.length){el.innerHTML=`<div class="empty-state"><div class="es-ic">📋</div><p>No ${mlFil} listings</p>${mlFil==='active'?`<button class="btn sm ba" onclick="gsc('post',null)">Post a listing</button>`:''}</div>`;return;}
+    el.innerHTML=data.map(l=>`<div style="background:#fff;border:1px solid var(--b);border-radius:var(--rl);padding:13px;display:flex;gap:12px;margin-bottom:8px;align-items:center">
+      <div style="width:52px;height:52px;border-radius:var(--r);background:${BG[l.category]||'#f5f5f5'};${l.cover_url?`background-image:url('${l.cover_url}');background-size:cover;background-position:center`:'display:flex;align-items:center;justify-content:center;font-size:20px'};flex-shrink:0">${l.cover_url?'':(IC[l.category]||'')}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;color:var(--dk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.title}</div><div style="font-size:13px;color:#BA7517;font-weight:600">${l.price?'$'+l.price+' / '+l.price_unit:''}</div></div>
+      <div style="display:flex;gap:6px"><button class="btn sm" onclick="toggleListing('${l.id}','${l.status}')">${l.status==='active'?'Pause':'Activate'}</button></div>
+    </div>`).join('');
+  } catch(e){ el.innerHTML='<div class="empty-state"><div class="es-ic">⚠️</div><p>Error loading listings.</p></div>'; }
+}
+function fml(f,btn){mlFil=f;document.querySelectorAll('#sc-mylistings .ftab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');loadMyListings();}
+
+// ══════════════════════════════════════════════════
+//  POST LISTING
+// ══════════════════════════════════════════════════
+async function checkPostGate(){
+  if(!currentUser) return;
+  const {count}=await db.from('listings').select('*',{count:'exact',head:true}).eq('company_id',currentUser.id).eq('status','active');
+  const gate=document.getElementById('post-gate');const form=document.getElementById('post-form');
+  const isFreePlan=currentCompany?.plan==='free';
+  if(isFreePlan&&count>=3){ if(gate)gate.style.display='flex'; if(form)form.style.display='none'; }
+  else { if(gate)gate.style.display='none'; if(form)form.style.display='block'; }
+}
+
+let postCatSel='pallets';
+function sct(c,el){postCatSel=c;document.querySelectorAll('.ctiles .ctile').forEach(t=>t.classList.remove('sel'));el.classList.add('sel');}
+function pstep(n){
+  for(let i=0;i<4;i++){
+    const p=document.getElementById('ps'+i),w=document.getElementById('ws'+i);
+    if(p)p.style.display=i===n?'block':'none';
+    if(w){w.className='ws';if(i<n)w.classList.add('d');if(i===n)w.classList.add('on');}
+  }
+  if(n===1)buildSpecFields();
+  if(n===3)buildPreview();
+}
+
+function buildSpecFields(){
+  const sf=document.getElementById('spec-fields');if(!sf)return;
+  const specs=SPEC_DEFS[postCatSel]||[];
+  const rows=[];
+  for(let i=0;i<specs.length;i+=2){
+    const a=specs[i],b=specs[i+1];
+    rows.push(`<div class="fg2r"><div class="fg2"><label>${a[0]}</label>${a[1]==='s'?`<select class="spec-inp" data-k="${a[0]}"><option value="">— Select —</option>${a[2].map(o=>`<option>${o}</option>`).join('')}</select>`:`<input class="spec-inp" data-k="${a[0]}" type="text" placeholder="${a[2]||''}">`}</div>${b?`<div class="fg2"><label>${b[0]}</label>${b[1]==='s'?`<select class="spec-inp" data-k="${b[0]}"><option value="">— Select —</option>${b[2].map(o=>`<option>${o}</option>`).join('')}</select>`:`<input class="spec-inp" data-k="${b[0]}" type="text" placeholder="${b[2]||''}">`}</div>`:''}</div>`);
+  }
+  sf.innerHTML=rows.join('');
+}
+
+// PHOTO UPLOAD
+function handlePhotoSelect(e){Array.from(e.target.files).forEach(addPhoto);}
+function handleDrop(e){e.preventDefault();document.getElementById('upzone')?.classList.remove('drag');Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')).forEach(addPhoto);}
+function addPhoto(file){
+  if(photoFiles.length>=2)return;
+  if(file.size>5*1024*1024){showToast('Photo must be under 5MB — please compress and try again');return;}
+  if(!file.type.startsWith('image/')){showToast('Please upload an image file (JPG or PNG)');return;}
+  photoFiles.push(file);
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    photoUrls.push(ev.target.result);
+    renderPhotoGrid();
+  };
+  reader.readAsDataURL(file);
+}
+function removePhoto(i){photoFiles.splice(i,1);photoUrls.splice(i,1);renderPhotoGrid();}
+function renderPhotoGrid(){
+  const g=document.getElementById('photo-grid');if(!g)return;
+  g.innerHTML=photoUrls.map((url,i)=>`<div class="photo-wrap"><img src="${url}" class="photo-thumb"><div class="photo-del" onclick="removePhoto(${i})">✕</div></div>`).join('');
+  const upzone=document.getElementById('upzone');
+  if(upzone)upzone.innerHTML=photoFiles.length?`<div style="font-size:13px;color:var(--t);font-weight:500">✓ ${photoFiles.length} photo${photoFiles.length!==1?'s':''} added — click to add more</div>`:`<div style="font-size:28px;margin-bottom:6px">📷</div><div style="font-weight:600;margin-bottom:3px">Click or drag photos here</div><div style="font-size:12px;color:var(--bd)">JPG, PNG, HEIC · First photo is your cover</div>`;
+}
+
+async function uploadPhotos(){
+  if(!photoFiles.length) return [];
+  const st=document.getElementById('upload-status');if(st)st.textContent='Uploading photos...';
+  const urls=[];
+  for(let i=0;i<photoFiles.length;i++){
+    const f=photoFiles[i];
+    const path=`${currentUser.id}/${Date.now()}-${i}-${f.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+    try {
+      const {data,error}=await db.storage.from('listing-photos').upload(path,f,{upsert:true});
+      if(error){console.error('Upload error:',error);continue;}
+      const {data:{publicUrl}}=db.storage.from('listing-photos').getPublicUrl(path);
+      urls.push(publicUrl);
+    } catch(e){ console.error('Photo upload exception:',e); }
+  }
+  if(st)st.textContent=urls.length?`✓ ${urls.length} photo${urls.length!==1?'s':''} uploaded`:'';
+  return urls;
+}
+
+function buildPreview(){
+  const title=document.getElementById('p-title')?.value||'Untitled listing';
+  const price=document.getElementById('p-price')?.value||'—';
+  const unit=document.getElementById('p-unit')?.value||'each';
+  const city=document.getElementById('p-city')?.value||currentCompany?.city||'';
+  const tags=(document.getElementById('p-tags')?.value||'').split(',').map(t=>t.trim()).filter(Boolean);
+  const cover=photoUrls[0];
+  document.getElementById('p-preview').innerHTML=`
+    <div style="height:160px;background:${BG[postCatSel]};${cover?`background-image:url('${cover}');background-size:cover;background-position:center`:'display:flex;align-items:center;justify-content:center;font-size:48px'}">${cover?'':(IC[postCatSel]||'')}</div>
+    <div style="padding:16px">
+      <div style="margin-bottom:8px"><span class="bdg ${CB[postCatSel]}">${CL[postCatSel]}</span></div>
+      <div style="font-family:'Fraunces',serif;font-size:19px;color:var(--dk);margin-bottom:5px">${title}</div>
+      <div style="font-size:24px;font-weight:600;color:var(--dk);margin-bottom:4px">${isNaN(price)?price:'$'+price}<span style="font-size:14px;font-weight:400;color:var(--bd)"> / ${unit}</span></div>
+      <div style="font-size:13px;color:var(--bd);margin-bottom:10px">${city} · ${currentCompany?.name||''}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>`;
+}
+
+async function publishListing(){
+  const btn=document.getElementById('pub-btn');if(btn){btn.textContent='Publishing...';btn.disabled=true;}
+  try {
+    const photoUploadUrls=await uploadPhotos();
+    const specs={};document.querySelectorAll('.spec-inp').forEach(el=>{if(el.value)specs[el.dataset.k]=el.value;});
+    const {error}=await db.from('listings').insert({
+      company_id:currentUser.id,company_name:currentCompany?.name,
+      category:postCatSel,
+      title:document.getElementById('p-title')?.value,
+      price:document.getElementById('p-price')?.value,
+      price_unit:document.getElementById('p-unit')?.value,
+      description:document.getElementById('p-desc')?.value,
+      tags:(document.getElementById('p-tags')?.value||'').split(',').map(t=>t.trim()).filter(Boolean),
+      specs,city:document.getElementById('p-city')?.value||currentCompany?.city,
+      zip:document.getElementById('p-zip')?.value||currentCompany?.zip,
+      phone:document.getElementById('p-phone')?.value||currentCompany?.phone,
+      pickup:document.getElementById('p-pickup')?.checked,
+      delivery:document.getElementById('p-delivery')?.checked,
+      forklift:document.getElementById('p-forklift')?.checked,
+      photos:photoUploadUrls,cover_url:photoUploadUrls[0]||null,status:'active'
+    });
+    if(error){alert('Error publishing: '+error.message);if(btn){btn.textContent='Publish now';btn.disabled=false;}return;}
+    // Reset form
+    photoFiles=[];photoUrls=[];
+    document.getElementById('photo-grid').innerHTML='';
+    pstep(0);
+    document.querySelectorAll('.ctile').forEach(t=>t.classList.remove('sel'));
+    document.querySelector('.ctile')?.classList.add('sel');
+    showToast('Listing published — it\'s live on PALX!');
+    await loadMarketplace();
+    gsc('marketplace',document.querySelector('.ni[onclick*="marketplace"]'));
+  } catch(e){ alert('Error: '+e.message);if(btn){btn.textContent='Publish now';btn.disabled=false;} }
+}
+
+// ══════════════════════════════════════════════════
+//  SALES TRACKER
+// ══════════════════════════════════════════════════
+async function loadSales(){
+  try {
+    const {data}=await db.from('sales').select('*').eq('seller_id',currentUser.id).order('created_at',{ascending:false});
+    allSales=data||[];
+    const tot=allSales.reduce((a,s)=>a+(s.total||0),0);
+    const pnd=allSales.filter(s=>['pending','confirmed'].includes(s.status)).length;
+    const don=allSales.filter(s=>s.status==='complete').length;
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    set('st-tot','$'+tot.toLocaleString());set('st-cnt',allSales.length);set('st-pnd',pnd);set('st-don',don);
+    renderSalesTable();
+  } catch(e){ console.error('Sales error:',e); }
+}
+function renderSalesTable(){
+  const b=document.getElementById('sales-body');if(!b)return;
+  const list=sfil==='all'?allSales:allSales.filter(s=>s.status===sfil);
+  if(!list.length){b.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="es-ic">📈</div><p>No ${sfil==='all'?'':sfil} sales yet</p><button class="btn sm ba" onclick="openLogModal('sale')">Log a sale</button></div></td></tr>`;return;}
+  b.innerHTML=list.map(s=>`<tr>
+    <td style="color:var(--bd);white-space:nowrap">${new Date(s.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+    <td style="font-weight:500;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.item||'—'}</td>
+    <td>${s.buyer||'—'}</td>
+    <td style="font-weight:600;color:#BA7517">${s.total?'$'+Number(s.total).toLocaleString():''}</td>
+    <td><span class="bdg ${ST[s.status]||'sp'}" style="cursor:pointer" onclick="cycleStatus('sale','${s.id}','${s.status}')">${SL[s.status]||s.status}</span></td>
+    <td style="font-size:12px;color:var(--bd);max-width:120px;overflow:hidden;text-overflow:ellipsis">${s.notes||'—'}</td>
+    <td><button class="btn sm" style="color:#791F1F" onclick="deleteRecord('sale','${s.id}')">✕</button></td>
+  </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  PURCHASES TRACKER
+// ══════════════════════════════════════════════════
+async function loadPurch(){
+  try {
+    const {data}=await db.from('purchases').select('*').eq('buyer_id',currentUser.id).order('created_at',{ascending:false});
+    allPurch=data||[];
+    const tot=allPurch.reduce((a,p)=>a+(p.total||0),0);
+    const pnd=allPurch.filter(p=>['pending','confirmed'].includes(p.status)).length;
+    const don=allPurch.filter(p=>p.status==='complete').length;
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    set('pt-tot','$'+tot.toLocaleString());set('pt-cnt',allPurch.length);set('pt-pnd',pnd);set('pt-don',don);
+    renderPurchTable();
+  } catch(e){ console.error('Purchases error:',e); }
+}
+function renderPurchTable(){
+  const b=document.getElementById('purch-body');if(!b)return;
+  const list=pfil==='all'?allPurch:allPurch.filter(p=>p.status===pfil);
+  if(!list.length){b.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="es-ic">🛒</div><p>No ${pfil==='all'?'':pfil} purchases yet</p><button class="btn sm bt" onclick="openLogModal('purchase')">Log a purchase</button></div></td></tr>`;return;}
+  b.innerHTML=list.map(p=>`<tr>
+    <td style="color:var(--bd);white-space:nowrap">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+    <td style="font-weight:500;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.item||'—'}</td>
+    <td>${p.seller||'—'}</td>
+    <td style="font-weight:600;color:#0F6E56">${p.total?'$'+Number(p.total).toLocaleString():''}</td>
+    <td><span class="bdg ${ST[p.status]||'sp'}" style="cursor:pointer" onclick="cycleStatus('purchase','${p.id}','${p.status}')">${SL[p.status]||p.status}</span></td>
+    <td style="font-size:12px;color:var(--bd);max-width:120px;overflow:hidden;text-overflow:ellipsis">${p.notes||'—'}</td>
+    <td><button class="btn sm" style="color:#791F1F" onclick="deleteRecord('purchase','${p.id}')">✕</button></td>
+  </tr>`).join('');
+}
+
+async function cycleStatus(type,id,cur){
+  try {
+    const next=STATUSES[(STATUSES.indexOf(cur)+1)%STATUSES.length];
+    await db.from(type==='sale'?'sales':'purchases').update({status:next}).eq('id',id);
+    if(type==='sale') loadSales(); else loadPurch();
+  } catch(e){ alert('Error updating status.'); }
+}
+async function deleteRecord(type,id){
+  if(!confirm('Delete this record?')) return;
+  try {
+    await db.from(type==='sale'?'sales':'purchases').delete().eq('id',id);
+    if(type==='sale') loadSales(); else loadPurch();
+  } catch(e){ alert('Error deleting record.'); }
+}
+
+function openLogModal(type){
+  document.getElementById('gen-modal').classList.add('on');
+  document.getElementById('gen-body').innerHTML=`
+    <h3>Log a ${type}</h3><div class="modal-sub">${type==='sale'?'Record a deal you sold':'Record something you bought'}</div>
+    <div class="err" id="log-err"></div>
+    <div class="fg"><label>${type==='sale'?'Item sold':'Item purchased'} *</label><input id="log-item" placeholder="e.g. 200 GMA 48×40 Grade A pallets"></div>
+    <div class="fg"><label>${type==='sale'?'Buyer':'Seller'} *</label><input id="log-party" placeholder="Company or person name"></div>
+    <div class="fg2r"><div class="fg"><label>Quantity</label><input id="log-qty" placeholder="e.g. 200 pallets"></div><div class="fg"><label>Total ($)</label><input id="log-total" type="number" placeholder="0.00" step="0.01" min="0"></div></div>
+    <div class="fg"><label>Notes</label><input id="log-notes" placeholder="Anything worth remembering about this deal"></div>
+    <button class="btn ba" style="width:100%;padding:12px" onclick="saveLog('${type}')">Save ${type}</button>`;
+}
+async function saveLog(type){
+  const item=document.getElementById('log-item')?.value.trim();
+  const party=document.getElementById('log-party')?.value.trim();
+  const err=document.getElementById('log-err');err.className='err';
+  if(!item||!party){err.textContent='Item and counterparty are required.';err.classList.add('on');return;}
+  try {
+    const rec={item,status:'pending',notes:document.getElementById('log-notes')?.value.trim()||''};
+    const tot=parseFloat(document.getElementById('log-total')?.value);
+    if(!isNaN(tot)&&tot>0) rec.total=tot;
+    const qty=document.getElementById('log-qty')?.value.trim();
+    if(qty) rec.qty=qty;
+    if(type==='sale'){rec.seller_id=currentUser.id;rec.buyer=party;await db.from('sales').insert(rec);closeGenModal();loadSales();}
+    else{rec.buyer_id=currentUser.id;rec.seller=party;await db.from('purchases').insert(rec);closeGenModal();loadPurch();}
+  } catch(e){ err.textContent='Error saving: '+e.message;err.classList.add('on'); }
+}
+
+// ══════════════════════════════════════════════════
+//  MESSAGES (real-time)
+// ══════════════════════════════════════════════════
+function subscribeMessages(){
+  if(!currentUser) return;
+  if(msgChannel) msgChannel.unsubscribe();
+  msgChannel=db.channel('msg-channel').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`to_id=eq.${currentUser.id}`},async(payload)=>{
+    allMsgs=[payload.new,...allMsgs];
+    const unread=allMsgs.filter(m=>m.to_id===currentUser.id&&!m.read).length;
+    updateMsgBadge(unread);
+    const sc=document.getElementById('sc-messages');
+    if(sc?.classList.contains('on')) loadMessages();
+    // Show toast notification
+    showToast(`New message from ${payload.new.from_name||'a member'}`);
+  }).subscribe();
+}
+
+function updateMsgBadge(n){
+  const badges=['msg-bdg','mob-msg-bdg'];
+  badges.forEach(id=>{const el=document.getElementById(id);if(!el)return;el.textContent=n||'';el.style.display=n>0?'inline-block':'none';});
+  const dm=document.getElementById('d-msgs');if(dm)dm.textContent=n||0;
+}
+
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1C1A16;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;z-index:1000;animation:fadeUp .3s ease;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
+
+async function loadMessages(){
+  const tl=document.getElementById('tlist');if(!tl)return;
+  tl.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const {data}=await db.from('messages').select('*').or(`from_id.eq.${currentUser.id},to_id.eq.${currentUser.id}`).order('created_at',{ascending:false});
+    allMsgs=data||[];
+    const threads={};
+    allMsgs.forEach(m=>{
+      const otherId=m.from_id===currentUser.id?m.to_id:m.from_id;
+      const otherName=m.from_id===currentUser.id?m.to_name:m.from_name;
+      if(!threads[otherId])threads[otherId]={id:otherId,name:otherName||'Unknown',msgs:[],unread:0};
+      threads[otherId].msgs.push(m);
+      if(m.to_id===currentUser.id&&!m.read)threads[otherId].unread++;
+    });
+    const arr=Object.values(threads);
+    const ms=document.getElementById('msg-sub');if(ms)ms.textContent=`${arr.length} conversation${arr.length!==1?'s':''}`;
+    if(!arr.length){
+      tl.innerHTML='<div class="empty-state" style="padding:24px"><div class="es-ic" style="font-size:28px">✉</div><p style="font-size:13px">No messages yet.<br>Browse companies and click Message.</p></div>';
+      return;
+    }
+    tl.innerHTML=arr.map((t,i)=>{
+      const last=t.msgs[0];
+      return `<div class="thread${i===0&&curThreadId===t.id?' on':''}" onclick="openThread('${t.id}','${t.name.replace(/'/g,"\\'")}')">
+        <div class="t-av">${(t.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--dk)">${t.name}</div><div style="font-size:12px;color:var(--bd);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${last?.body||''}</div></div>
+        ${t.unread?'<div class="udot"></div>':''}
+      </div>`;
+    }).join('');
+    if(arr.length) openThread(arr[0].id,arr[0].name);
+  } catch(e){ console.error('Messages error:',e); tl.innerHTML='<div class="empty-state"><div class="es-ic">⚠️</div><p>Error loading messages.</p></div>'; }
+}
+
+async function openThread(otherId,otherName){
+  curThreadId=otherId;
+  document.querySelectorAll('.thread').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.thread').forEach(t=>{if(t.onclick?.toString().includes(otherId))t.classList.add('on');});
+  const msgs=allMsgs.filter(m=>(m.from_id===currentUser.id&&m.to_id===otherId)||(m.from_id===otherId&&m.to_id===currentUser.id)).reverse();
+  try { await db.from('messages').update({read:true}).eq('to_id',currentUser.id).eq('from_id',otherId); }
+  catch(e){}
+  const unread=allMsgs.filter(m=>m.to_id===currentUser.id&&!m.read).length;
+  updateMsgBadge(unread);
+  document.getElementById('convo').innerHTML=`
+    <div class="c-hdr"><div style="font-size:14px;font-weight:600">${otherName}</div></div>
+    <div class="msgs" id="msg-list">${msgs.map(m=>`<div><div class="msg ${m.from_id===currentUser.id?'me':'them'}">${m.body}</div><div class="msg-t ${m.from_id===currentUser.id?'me':''}">${new Date(m.created_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div></div>`).join('')}</div>
+    <div class="cinp"><textarea id="msg-inp" placeholder="Type a message… (Enter to send)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('${otherId}','${otherName.replace(/'/g,"\\'")}')}" style="min-height:38px;max-height:100px"></textarea><button class="btn ba" onclick="sendMsg('${otherId}','${otherName.replace(/'/g,"\\'")}')">Send</button></div>`;
+  const ml=document.getElementById('msg-list');
+  if(ml)setTimeout(()=>ml.scrollTop=ml.scrollHeight,50);
+}
+
+async function sendMsg(toId,toName){
+  const inp=document.getElementById('msg-inp');
+  const body=inp.value.trim();if(!body)return;
+  inp.value='';inp.style.height='38px';
+  try {
+    await db.from('messages').insert({from_id:currentUser.id,from_name:currentCompany?.name||'',to_id:toId,to_name:toName,body,read:false});
+    // Optimistically add to view
+    allMsgs.unshift({from_id:currentUser.id,to_id:toId,body,created_at:new Date().toISOString(),read:false});
+    openThread(toId,toName);
+  } catch(e){ alert('Error sending message.'); inp.value=body; }
+}
+
+async function startMsg(toId,toName){
+  gsc('messages',null);
+  document.querySelectorAll('.ni').forEach(n=>{if(n.textContent.includes('Messages'))n.classList.add('on');});
+  await loadMessages();
+  // Start a thread even if no messages yet
+  if(!allMsgs.some(m=>(m.from_id===toId||m.to_id===toId))){
+    const tl=document.getElementById('tlist');
+    const threadDiv=document.createElement('div');
+    threadDiv.className='thread on';
+    threadDiv.innerHTML=`<div class="t-av">${(toName||'?').split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--dk)">${toName}</div><div style="font-size:12px;color:var(--bd)">New conversation</div></div>`;
+    if(tl)tl.insertBefore(threadDiv,tl.firstChild);
+    document.getElementById('convo').innerHTML=`<div class="c-hdr"><div>${toName}</div></div><div class="msgs" id="msg-list"></div><div class="cinp"><textarea id="msg-inp" placeholder="Start a conversation with ${toName}…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('${toId}','${toName.replace(/'/g,"\\'")}')}" style="min-height:38px"></textarea><button class="btn ba" onclick="sendMsg('${toId}','${toName.replace(/'/g,"\\'")}')">Send</button></div>`;
+    curThreadId=toId;
+  } else { openThread(toId,toName); }
+}
+
+// ══════════════════════════════════════════════════
+//  ADMIN PANEL
+// ══════════════════════════════════════════════════
+async function loadAdmin(){
+  if(currentUser?.email!==ADMIN_EMAIL){document.getElementById('admin-body').innerHTML='<div class="empty-state"><div class="es-ic">🔒</div><p>Admin access only.</p></div>';return;}
+  atab('prices',document.querySelector('#sc-admin .co-tab'));
+}
+
+async function atab(t,btn){
+  document.querySelectorAll('#sc-admin .co-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const el=document.getElementById('admin-body');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  try {
+    if(t==='prices'){
+      const[{data:listings},{data:prices}]=await Promise.all([
+        db.from('listings').select('category,price,price_unit').eq('status','active').not('price','is',null),
+        db.from('market_prices').select('*').order('category')
+      ]);
+      const byCat={};
+      (listings||[]).forEach(l=>{const n=parseFloat(l.price);if(!isNaN(n)&&n>0){if(!byCat[l.category])byCat[l.category]=[];byCat[l.category].push(n);}});
+      const auto=Object.entries(byCat).map(([cat,arr])=>({cat,low:Math.min(...arr).toFixed(2),high:Math.max(...arr).toFixed(2),avg:(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2),count:arr.length}));
+      el.innerHTML=`<div class="card" style="margin-bottom:16px;background:var(--tl);border-color:#5DCAA5"><div class="card-t" style="color:#085041">Auto-calculated from live listings</div>
+        ${auto.length?`<table class="tbl"><thead><tr><th>Category</th><th>Low</th><th>High</th><th>Avg</th><th>From</th></tr></thead><tbody>${auto.map(r=>`<tr><td style="font-weight:500;text-transform:capitalize">${r.cat}</td><td>$${r.low}</td><td>$${r.high}</td><td>$${r.avg}</td><td style="color:var(--bd)">${r.count} listing${r.count!==1?'s':''}</td></tr>`).join('')}</tbody></table>`:'<p style="font-size:13px;color:var(--bd)">No listings with prices yet. Auto-calc appears here as members post.</p>'}
+      </div>
+      <div class="card"><div class="card-t">Manual price entries <button class="btn sm ba" onclick="openAddPriceModal()">+ Add row</button></div>
+        <table class="tbl"><thead><tr><th>Item</th><th>Range</th><th>Trend</th><th>Source</th><th></th></tr></thead>
+        <tbody>${(prices||[]).map(p=>`<tr><td style="font-weight:500">${p.item_name}<div style="font-size:11px;color:var(--bd);text-transform:capitalize">${p.category}</div></td><td>$${p.price_low}${p.price_high?'–$'+p.price_high:''} / ${p.price_unit}</td><td>${p.trend==='up'?`<span style="color:#27500A">▲ ${p.trend_pct||''}</span>`:p.trend==='down'?`<span style="color:#791F1F">▼ ${p.trend_pct||''}</span>`:'<span style="color:#888">— Flat</span>'}</td><td style="font-size:12px;color:var(--bd)">${p.source||'—'}</td><td><button class="btn sm" onclick="deleteAdminRow('market_prices','${p.id}','prices')">✕</button></td></tr>`).join('')}</tbody></table>
+      </div>`;
+    } else if(t==='news'){
+      const {data:news}=await db.from('news_items').select('*').order('published_date',{ascending:false});
+      el.innerHTML=`<div class="card"><div class="card-t">News &amp; alerts <button class="btn sm ba" onclick="openAddNewsModal()">+ Post item</button></div>
+        ${(news||[]).map(n=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--b)">
+          <div style="flex:1"><div style="display:flex;gap:7px;align-items:center;margin-bottom:4px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:${n.category==='alert'?'#712B13':n.category==='opportunity'?'#27500A':'#0C447C'}">${n.category}</span><span style="font-size:11px;color:var(--bd)">${n.published_date}</span>${n.active?'<span class="bdg sco" style="font-size:10px">Live</span>':'<span class="bdg sp" style="font-size:10px">Hidden</span>'}</div>
+          <div style="font-size:13px;font-weight:500;color:var(--dk)">${n.headline}</div></div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="btn sm" onclick="toggleNewsItem('${n.id}',${!n.active})">${n.active?'Hide':'Show'}</button>
+            <button class="btn sm" style="color:#791F1F" onclick="deleteAdminRow('news_items','${n.id}','news')">✕</button>
+          </div></div>`).join('')}
+      </div>`;
+    } else if(t==='users'){
+      const {data:cos}=await db.from('companies').select('*').order('created_at',{ascending:false});
+      el.innerHTML=`<div class="card"><div class="card-t">All accounts (${(cos||[]).length})</div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Business</th><th>Owner</th><th>City</th><th>Email</th><th>Joined</th><th>Plan</th></tr></thead>
+        <tbody>${(cos||[]).map(c=>`<tr><td style="font-weight:500">${c.name||'—'}</td><td>${c.owner_name||'—'}</td><td style="color:var(--bd)">${c.city||'—'}</td><td style="color:var(--bd);font-size:12px">${c.email||'—'}</td><td style="color:var(--bd);white-space:nowrap">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td><span class="bdg ${c.plan==='pro'?'bpro':c.plan==='member'?'bmem':''}">${c.plan||'free'}</span></td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+    } else if(t==='all-listings'){
+      const {data:listings}=await db.from('listings').select('*,companies(name)').order('created_at',{ascending:false}).limit(100);
+      el.innerHTML=`<div class="card"><div class="card-t">All listings (${(listings||[]).length} most recent)</div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Title</th><th>By</th><th>Category</th><th>Price</th><th>Status</th><th>Posted</th><th></th></tr></thead>
+        <tbody>${(listings||[]).map(l=>`<tr><td style="font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.title}</td><td style="color:var(--bd)">${l.companies?.name||'—'}</td><td><span class="bdg ${CB[l.category]||''}" style="font-size:10px">${CL[l.category]||l.category}</span></td><td>${l.price?'$'+l.price+' / '+l.price_unit:'—'}</td><td><span class="bdg ${l.status==='active'?'sco':'sp'}">${l.status}</span></td><td style="color:var(--bd);white-space:nowrap">${new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td><td><button class="btn sm" style="color:#791F1F" onclick="adminRemoveListing('${l.id}')">Remove</button></td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+    }
+  } catch(e){ el.innerHTML='<div class="empty-state"><div class="es-ic">⚠️</div><p>Error loading admin data.</p></div>'; }
+}
+
+async function toggleNewsItem(id,active){try{await db.from('news_items').update({active}).eq('id',id);atab('news',null);loadLiveMarketPulse();}catch(e){}}
+async function deleteAdminRow(table,id,tab){if(!confirm('Delete this?'))return;try{await db.from(table).delete().eq('id',id);atab(tab,null);if(tab==='news')loadLiveMarketPulse();}catch(e){}}
+async function adminRemoveListing(id){if(!confirm('Remove this listing?'))return;try{await db.from('listings').update({status:'removed'}).eq('id',id);atab('all-listings',null);}catch(e){}}
+
+function openAddNewsModal(){
+  document.getElementById('gen-modal').classList.add('on');
+  document.getElementById('gen-body').innerHTML=`<h3>Post news item</h3><div class="modal-sub">Shows in Market pulse on the landing page</div>
+    <div class="ok" id="ni-ok"></div>
+    <div class="fg"><label>Headline *</label><textarea id="ni-hl" style="min-height:70px" placeholder="e.g. Port of LA tightening HT inspections..."></textarea></div>
+    <div class="fg2r"><div class="fg"><label>Category</label><select id="ni-cat"><option value="market">Market</option><option value="alert">Compliance alert</option><option value="association">PALX update</option><option value="opportunity">Buying opportunity</option></select></div><div class="fg"><label>Source</label><input id="ni-src" placeholder="e.g. Port of LA Notice"></div></div>
+    <div class="fg"><label>Date</label><input id="ni-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+    <button class="btn ba" style="width:100%;padding:12px" onclick="saveNewsItem()">Post to landing page</button>`;
+}
+async function saveNewsItem(){
+  const hl=document.getElementById('ni-hl')?.value.trim();if(!hl){alert('Headline required');return;}
+  try{await db.from('news_items').insert({headline:hl,category:document.getElementById('ni-cat')?.value,source:document.getElementById('ni-src')?.value.trim(),published_date:document.getElementById('ni-date')?.value,active:true});document.getElementById('ni-ok').textContent='Posted!';document.getElementById('ni-ok').classList.add('on');setTimeout(()=>closeGenModal(),800);loadLiveMarketPulse();}catch(e){alert('Error: '+e.message);}
+}
+function openAddPriceModal(){
+  document.getElementById('gen-modal').classList.add('on');
+  document.getElementById('gen-body').innerHTML=`<h3>Add price row</h3>
+    <div class="fg"><label>Item name *</label><input id="mp-nm" placeholder="e.g. GMA 48x40 Grade A"></div>
+    <div class="fg2r"><div class="fg"><label>Category</label><select id="mp-cat"><option>pallets</option><option>lumber</option><option>hardware</option><option>equipment</option><option>services</option></select></div><div class="fg"><label>Unit</label><select id="mp-unit"><option>each</option><option>per bd ft</option><option>per box</option><option>per pallet</option><option>per MBF</option></select></div></div>
+    <div class="fg2r"><div class="fg"><label>Price low ($)</label><input id="mp-lo" type="number" step="0.01"></div><div class="fg"><label>Price high ($)</label><input id="mp-hi" type="number" step="0.01"></div></div>
+    <div class="fg2r"><div class="fg"><label>Trend</label><select id="mp-tr"><option value="flat">Flat</option><option value="up">Up ▲</option><option value="down">Down ▼</option></select></div><div class="fg"><label>Trend %</label><input id="mp-pct" placeholder="e.g. +4% or -2%"></div></div>
+    <div class="fg"><label>Source</label><input id="mp-src" value="PALX listings"></div>
+    <button class="btn ba" style="width:100%;padding:12px" onclick="savePriceRow()">Add price row</button>`;
+}
+async function savePriceRow(){
+  const nm=document.getElementById('mp-nm')?.value.trim();if(!nm){alert('Name required');return;}
+  try{await db.from('market_prices').insert({item_name:nm,category:document.getElementById('mp-cat')?.value,price_unit:document.getElementById('mp-unit')?.value,price_low:parseFloat(document.getElementById('mp-lo')?.value)||null,price_high:parseFloat(document.getElementById('mp-hi')?.value)||null,trend:document.getElementById('mp-tr')?.value,trend_pct:document.getElementById('mp-pct')?.value.trim()||null,source:document.getElementById('mp-src')?.value.trim(),auto_calculated:false});closeGenModal();loadLiveMarketPulse();atab('prices',null);}catch(e){alert('Error: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════
+initAuth();
+</script>
+</body>
+</html>
